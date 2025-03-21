@@ -1,0 +1,202 @@
+---
+const anoAtual = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <h3>STUDIO DREZ</h3>
+        <p>Transformando o descartado em arte</p>
+      </div>
+      
+      <div class="footer-links">
+        <h4>Links Rápidos</h4>
+        <ul>
+          <li><a href="#sobre">Sobre</a></li>
+          <li><a href="#trabalhos">Trabalhos</a></li>
+          <li><a href="#parceiros">Parceiros</a></li>
+          <li><a href="#contato">Contato</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-newsletter">
+        <h4>Receba Novidades</h4>
+        <p>Inscreva-se para receber atualizações sobre novos projetos e eventos</p>
+        <form class="newsletter-form">
+          <input type="email" placeholder="Seu email" required>
+          <button type="submit" class="btn-newsletter">Inscrever</button>
+        </form>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; {anoAtual} Upcycle Studio. Todos os direitos reservados.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Política de Privacidade</a>
+        <a href="#">Termos de Uso</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const newsletterForm = document.querySelector('.newsletter-form');
+    
+    newsletterForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = newsletterForm.querySelector('input[type="email"]').value;
+      
+      // Aqui você adicionaria a lógica para cadastrar o email
+      
+      // Simulação de cadastro bem-sucedido
+      alert(`Email ${email} cadastrado com sucesso!`);
+      newsletterForm.reset();
+    });
+  });
+</script>
+
+<style>
+  .footer {
+    background-color: #111;
+    color: white;
+    padding: 4rem 0 2rem;
+  }
+  
+  .footer-content {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+  
+  .footer-logo h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+  
+  .footer-logo p {
+    opacity: 0.7;
+  }
+  
+  .footer-links h4,
+  .footer-newsletter h4 {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+  }
+  
+  .footer-links h4::after,
+  .footer-newsletter h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background-color: white;
+  }
+  
+  .footer-links ul {
+    list-style: none;
+  }
+  
+  .footer-links li {
+    margin-bottom: 0.8rem;
+  }
+  
+  .footer-links a {
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+  }
+  
+  .footer-links a:hover {
+    opacity: 1;
+  }
+  
+  .footer-newsletter p {
+    margin-bottom: 1.5rem;
+    opacity: 0.7;
+  }
+  
+  .newsletter-form {
+    display: flex;
+  }
+  
+  .newsletter-form input {
+    flex: 1;
+    padding: 0.8rem;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-family: var(--font-family);
+  }
+  
+  .newsletter-form input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .btn-newsletter {
+    padding: 0 1.5rem;
+    background-color: white;
+    color: black;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-family);
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-newsletter:hover {
+    background-color: #ddd;
+  }
+  
+  .footer-bottom {
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .footer-bottom p {
+    opacity: 0.7;
+    font-size: 0.9rem;
+  }
+  
+  .footer-bottom-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .footer-bottom-links a {
+    opacity: 0.7;
+    font-size: 0.9rem;
+    transition: opacity 0.3s ease;
+  }
+  
+  .footer-bottom-links a:hover {
+    opacity: 1;
+  }
+  
+  @media (max-width: 992px) {
+    .footer-content {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .footer-content {
+      grid-template-columns: 1fr;
+    }
+    
+    .footer-bottom {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>

@@ -1,0 +1,81 @@
+---
+const parceiros = [
+  {
+    nome: "EcoDesign Brasil",
+    logo: "/images/parceiro-1.png"
+  },
+  {
+    nome: "Sustenta+",
+    logo: "/images/parceiro-2.png"
+  },
+  {
+    nome: "Green Living",
+    logo: "/images/parceiro-3.png"
+  },
+  {
+    nome: "ReciclArte",
+    logo: "/images/parceiro-4.png"
+  },
+  {
+    nome: "Nova Vida",
+    logo: "/images/parceiro-5.png"
+  }
+];
+---
+
+<section id="parceiros" class="section parceiros">
+  <div class="container">
+    <div class="section-header">
+      <h2>Nossos Parceiros</h2>
+      <div class="divider"></div>
+      <p>Empresas e organizações que confiam em nosso trabalho e compartilham nossa visão de sustentabilidade</p>
+    </div>
+    
+    <div class="parceiros-slider">
+      {parceiros.map(parceiro => (
+        <div class="parceiro-item">
+          <img src={parceiro.logo} alt={parceiro.nome} />
+        </div>
+      ))}
+    </div>
+    
+    <div class="depoimentos">
+      <div class="depoimento">
+        <div class="depoimento-texto">
+          <p>"O trabalho de upcycling realizado transformou completamente nosso espaço. Além de sustentável, as peças são verdadeiras obras de arte que contam histórias."</p>
+        </div>
+        <div class="depoimento-autor">
+          <div class="autor-img">
+            <img src="/images/depoimento-1.jpg" alt="Cliente" />
+          </div>
+          <div class="autor-info">
+            <h4>Marina Silva</h4>
+            <p>Diretora Criativa, EcoDesign Brasil</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .parceiros {
+    background-color: #f9f9f9;
+  }
+  
+  .parceiros-slider {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin: 3rem 0;
+  }
+  
+  .parceiro-item {
+    flex: 1;
+    min-width: 150px;
+    max-width: 200px;
+    padding: 1.5rem;
+    background-color: white;
+    border-radius: 2px;
