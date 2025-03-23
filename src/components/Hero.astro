@@ -4,7 +4,8 @@
 <section class="hero">
   <div class="container">
     <div class="hero-content">
-      <h1>Transformando o <span>Descartado</span> em <span>Arte</span></h1>
+      <h1>Davi Rezende transformando<span> o  descartado</span>
+        <span> em Arte</span></h1>
       <p>Soluções criativas de upcycling que combinam sustentabilidade e design exclusivo</p>
       <div class="hero-buttons">
         <a href="#trabalhos" class="btn">Ver Trabalhos</a>
@@ -84,17 +85,21 @@
   
   .hero-image {
     position: relative;
-    height: 800px;
-  
+    height: 100%;
     width: 100%;
-    overflow: hidden
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .image-container {
     position: relative;
     overflow: hidden;
-    border-radius: 2px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border-radius: 10px 90px 10px 90px;
+    height: 80vh;
+    max-height: 700px;
+    width: 100%;
   }
   
   .image-container::before {
@@ -113,7 +118,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
+    transition: transform 0.7s ease;
   }
   
   .image-container:hover img {
