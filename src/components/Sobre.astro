@@ -1,0 +1,175 @@
+---
+---
+
+<section id="sobre" class="section sobre">
+  <div class="container">
+    <div class="section-header">
+      <h2>Quem é Davi Rezende?</h2>
+      <div class="divider"></div>
+    </div>
+    
+    <div class="sobre-content">
+      <div class="sobre-image">
+        <img src="/images/hero01.webp" alt="Designer de Upcycle" />
+      </div>
+      
+      <div class="sobre-text">
+        <h3>Transformando o Comum em Extraordinário</h3>
+        <p>
+          Davi Rezende é um especialista em de design upcycling, dedicado a transformar materiais descartados em peças funcionais e esteticamente impressionantes. Missão é redefinir o conceito de "lixo" através de criatividade e inovação.
+        </p>
+        <p>
+          Com mais de 10 anos de experiência, combinamos técnicas artesanais tradicionais com abordagens contemporâneas para criar designs únicos que contam histórias e inspiram mudanças.
+        </p>
+        
+        <div class="valores">
+          <div class="valor">
+            <h4>Sustentabilidade</h4>
+            <p>Comprometidos com práticas eco-friendly em todo o processo criativo.</p>
+          </div>
+          <div class="valor">
+            <h4>Originalidade</h4>
+            <p>Cada peça é única, refletindo nossa visão artística e seu propósito.</p>
+          </div>
+          <div class="valor">
+            <h4>Qualidade</h4>
+            <p>Atenção meticulosa aos detalhes para garantir durabilidade e excelência.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .sobre {
+    background-color: #f9f9f9;
+  }
+  
+  .section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .section-header h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  .divider {
+    height: 3px;
+    width: 60px;
+    background-color: var(--color-primary);
+    margin: 0 auto;
+  }
+  
+  .sobre-content {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  
+  .sobre-image {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sobre-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.5s ease;
+  }
+  
+  .sobre-image:hover img {
+    transform: scale(1.03);
+  }
+  
+  .sobre-text h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .sobre-text h3::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background-color: var(--color-primary);
+  }
+  
+  .sobre-text p {
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+  }
+  
+  .valores {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .valor {
+    padding: 1.5rem;
+    background-color: white;
+    border-radius: 2px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .valor:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .valor h4 {
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+  }
+  
+  .valor h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background-color: var(--color-primary);
+  }
+  
+  .valor p {
+    font-size: 0.95rem;
+    margin-bottom: 0;
+  }
+  
+  @media (max-width: 992px) {
+    .sobre-content {
+      grid-template-columns: 1fr;
+    }
+    
+    .valores {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .section-header h2 {
+      font-size: 2rem;
+    }
+    
+    .sobre-text h3 {
+      font-size: 1.5rem;
+    }
+  }
+</style>

@@ -1,0 +1,238 @@
+---
+const parceiros = [
+  {
+    nome: "Corona",
+    logo: "/images/empresas/download.png"
+  },
+  {
+    nome: "Globo",
+    logo: "/images/empresas/globo.webp"
+  },
+  {
+    nome: "Sesc",
+    logo: "/images/empresas/sesc.png"
+  },
+  {
+    nome: "Shell",
+    logo: "/images/empresas/shell.webp"
+  },
+  // {
+  //   nome: "Nova Vida",
+  //   logo: "/images/empresas/globo.webp"
+  // }
+];
+---
+
+<section id="parceiros" class="section parceiros">
+  <div class="container">
+    <div class="section-header">
+      <h2>Nossos Parceiros</h2>
+      <div class="divider"></div>
+      <p>Empresas e organizações que confiam em nosso trabalho e compartilham nossa visão de sustentabilidade</p>
+    </div>
+    
+    <div class="parceiros-slider">
+      {parceiros.map(parceiro => (
+        <div class="parceiro-item">
+          <img src={parceiro.logo} alt={parceiro.nome} />
+        </div>
+      ))}
+    </div>
+    
+    <div class="depoimentos">
+      <div class="depoimento">
+        <div class="depoimento-texto">
+          <p>"O trabalho de upcycling realizado transformou completamente nosso espaço. Além de sustentável, as peças são verdadeiras obras de arte que contam histórias."</p>
+        </div>
+        <div class="depoimento-autor">
+          <div class="autor-img">
+            <img src="/images/marinasilva.jpg" alt="Cliente" />
+          </div>
+          <div class="autor-info">
+            <h4>Marina Silva</h4>
+            <p>Diretora Criativa, EcoDesign Brasil</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .parceiros {
+    background-color: #f9f9f9;
+  }
+  
+  .parceiros-slider {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin: 3rem 0;
+  }
+  
+  .parceiro-item {
+    flex: 0 0 150px;
+    width: 150px;
+    height: 150px;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 50%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    border: 2px solid #f0f0f0;
+  }
+  
+  .parceiro-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .parceiro-item img {
+    max-width: 70%;
+    height: auto;
+    max-height: 70%;
+    object-fit: contain;
+  }
+  
+  .depoimentos {
+    margin-top: 4rem;
+  }
+  
+  .depoimento {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  }
+  
+  .depoimento-texto {
+    font-style: italic;
+    position: relative;
+  }
+  
+  .depoimento-texto p {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .depoimento-autor {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  .autor-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .autor-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .autor-info h4 {
+    margin: 0 0 0.3rem;
+    font-size: 1.1rem;
+  }
+  
+  .autor-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+  
+  @media (max-width: 768px) {
+    .parceiros-slider {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      justify-content: center;
+      justify-items: center;
+      width: 100%;
+    }
+    
+    .parceiro-item {
+      flex: none;
+      min-width: 100px;
+      max-width: 100px;
+      margin: 0 auto;
+    }
+  }
+</style>
+
+<script>
+  // Script para criar um carrossel infinito que mostra todos os parceiros
+  document.addEventListener('DOMContentLoaded', () => {
+    const slider = document.querySelector('.parceiros-slider');
+    
+    if (slider && window.innerWidth <= 768) {
+      let scrollAmount = 0;
+      const scrollMax = slider.scrollWidth - slider.clientWidth;
+      const scrollStep = 1;
+      const scrollInterval = 30;
+      
+      let autoScroll = setInterval(() => {
+        slider.scrollLeft += scrollStep;
+        scrollAmount += scrollStep;
+        
+        // Quando chegar ao final, volte ao início suavemente
+        if (slider.scrollLeft >= scrollMax) {
+          // Reinicia o scroll suavemente
+          scrollAmount = 0;
+          slider.scrollLeft = 0;
+        }
+      }, scrollInterval);
+      
+      // Pausa a animação quando o usuário interage
+      slider.addEventListener('mouseenter', () => {
+        clearInterval(autoScroll);
+      });
+      
+      slider.addEventListener('touchstart', () => {
+        clearInterval(autoScroll);
+      }, { passive: true });
+      
+      // Reinicia a animação quando o usuário para de interagir
+      slider.addEventListener('mouseleave', () => {
+        scrollAmount = slider.scrollLeft;
+        
+        autoScroll = setInterval(() => {
+          slider.scrollLeft += scrollStep;
+          scrollAmount += scrollStep;
+          
+          if (slider.scrollLeft >= scrollMax) {
+            scrollAmount = 0;
+            slider.scrollLeft = 0;
+          }
+        }, scrollInterval);
+      });
+      
+      slider.addEventListener('touchend', () => {
+        scrollAmount = slider.scrollLeft;
+        
+        autoScroll = setInterval(() => {
+          slider.scrollLeft += scrollStep;
+          scrollAmount += scrollStep;
+          
+          if (slider.scrollLeft >= scrollMax) {
+            scrollAmount = 0;
+            slider.scrollLeft = 0;
+          }
+        }, scrollInterval);
+      });
+    }
+  });
+</script>
