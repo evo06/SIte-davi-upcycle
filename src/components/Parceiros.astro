@@ -1,25 +1,25 @@
 ---
 const parceiros = [
   {
-    nome: "EcoDesign Brasil",
-    logo: "/images/parceiro-1.png"
+    nome: "Corona",
+    logo: "/images/empresas/download.png"
   },
   {
-    nome: "Sustenta+",
-    logo: "/images/parceiro-2.png"
+    nome: "Globo",
+    logo: "/images/empresas/globo.webp"
   },
   {
-    nome: "Green Living",
-    logo: "/images/parceiro-3.png"
+    nome: "Sesc",
+    logo: "/images/empresas/sesc.png"
   },
   {
-    nome: "ReciclArte",
-    logo: "/images/parceiro-4.png"
+    nome: "Shell",
+    logo: "/images/empresas/shell.webp"
   },
-  {
-    nome: "Nova Vida",
-    logo: "/images/parceiro-5.png"
-  }
+  // {
+  //   nome: "Nova Vida",
+  //   logo: "/images/empresas/globo.webp"
+  // }
 ];
 ---
 
@@ -79,3 +79,102 @@ const parceiros = [
     padding: 1.5rem;
     background-color: white;
     border-radius: 2px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+  }
+  
+  .parceiro-item:hover {
+    transform: translateY(-5px);
+  }
+  
+  .parceiro-item img {
+    max-width: 100%;
+    height: auto;
+    max-height: 80px;
+    object-fit: contain;
+  }
+  
+  @media (max-width: 768px) {
+    .parceiros-slider {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      justify-content: center;
+      width: 100%;
+    }
+    
+    .parceiro-item {
+      flex: none;
+      min-width: 0;
+      max-width: 100%;
+      margin-right: 0;
+    }
+  }
+</style>
+
+<script>
+  // Script para criar um carrossel infinito que mostra todos os parceiros
+  document.addEventListener('DOMContentLoaded', () => {
+    const slider = document.querySelector('.parceiros-slider');
+    
+    if (slider && window.innerWidth <= 768) {
+      let scrollAmount = 0;
+      const scrollMax = slider.scrollWidth - slider.clientWidth;
+      const scrollStep = 1;
+      const scrollInterval = 30;
+      
+      let autoScroll = setInterval(() => {
+        slider.scrollLeft += scrollStep;
+        scrollAmount += scrollStep;
+        
+        // Quando chegar ao final, volte ao início suavemente
+        if (slider.scrollLeft >= scrollMax) {
+          // Reinicia o scroll suavemente
+          scrollAmount = 0;
+          slider.scrollLeft = 0;
+        }
+      }, scrollInterval);
+      
+      // Pausa a animação quando o usuário interage
+      slider.addEventListener('mouseenter', () => {
+        clearInterval(autoScroll);
+      });
+      
+      slider.addEventListener('touchstart', () => {
+        clearInterval(autoScroll);
+      }, { passive: true });
+      
+      // Reinicia a animação quando o usuário para de interagir
+      slider.addEventListener('mouseleave', () => {
+        scrollAmount = slider.scrollLeft;
+        
+        autoScroll = setInterval(() => {
+          slider.scrollLeft += scrollStep;
+          scrollAmount += scrollStep;
+          
+          if (slider.scrollLeft >= scrollMax) {
+            scrollAmount = 0;
+            slider.scrollLeft = 0;
+          }
+        }, scrollInterval);
+      });
+      
+      slider.addEventListener('touchend', () => {
+        scrollAmount = slider.scrollLeft;
+        
+        autoScroll = setInterval(() => {
+          slider.scrollLeft += scrollStep;
+          scrollAmount += scrollStep;
+          
+          if (slider.scrollLeft >= scrollMax) {
+            scrollAmount = 0;
+            slider.scrollLeft = 0;
+          }
+        }, scrollInterval);
+      });
+    }
+  });
+</script>
