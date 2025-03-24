@@ -97,11 +97,12 @@
     position: relative;
     overflow: hidden;
     border-radius: 20px 100px 20px 100px;
-    height: 85vh;  /* Reduzido para diminuir a altura */
-    max-height: 450px;  /* Reduzido para limitar a altura máxima */
-    width: 75%;  /* Reduzido para diminuir a largura */
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    height: 70vh;  /* Ajustado para melhor proporção */
+    max-height: 500px;  /* Aumentado para mostrar mais conteúdo */
+    width: 85%;  /* Aumentado para melhor proporção */
     transform: translateY(-10px);
+    background-color: rgba(255, 255, 255, 0.05);
+    
   }
   
   .image-container::before {
@@ -111,11 +112,11 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1));
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05));
     z-index: 1;
   }
   
-  .image-container::after {
+  /* .image-container::after {
     content: '';
     position: absolute;
     top: -5px;
@@ -126,13 +127,13 @@
     border-radius: 25px 105px 25px 105px;
     z-index: 0;
     pointer-events: none;
-  }
+  } */
   
   .image-container img {
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain; /* Alterado de 'cover' para 'contain' */
     object-position: center;
     transition: transform 0.7s ease;
   }
