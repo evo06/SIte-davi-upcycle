@@ -6,7 +6,7 @@
     <nav class="nav">
       <div class="logo">
         <img src="/images/logo.png" alt="logo">
-        <span class="logo-text">Davi Rezende</span>
+        <span class="logo-text" id="animatedLogoText">Davi Rezende</span>
       </div>
       <div class="nav-toggle" id="navToggle">
         <span></span>
@@ -25,6 +25,24 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    const animatedLogoText = document.getElementById('animatedLogoText');
+
+    function updateLogoTextFill() {
+      if (!animatedLogoText) return;
+
+      const scrollPosition = window.scrollY;
+      // Defina uma altura de scroll para a animação completar (ex: 200px)
+      // Ou pode ser a altura de uma seção específica
+      const maxScroll = 200; 
+      let fillPercentage = (scrollPosition / maxScroll) * 100;
+      fillPercentage = Math.min(100, Math.max(0, fillPercentage)); // Garante que fique entre 0 e 100
+
+      animatedLogoText.style.setProperty('--fill-percentage', `${fillPercentage}%`);
+    }
+
+    window.addEventListener('scroll', updateLogoTextFill);
+    updateLogoTextFill(); // Chama uma vez para definir o estado inicial
+
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.getElementById('navMenu');
     
@@ -66,17 +84,32 @@
     }
     
     .logo-text {
+      position: relative; /* Necessário para o pseudo-elemento */
+      background: linear-gradient(to right, var(--color-primary) var(--fill-percentage, 0%), var(--color-text) var(--fill-percentage, 0%));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: background 0.1s ease-out; /* Transição suave */
       font-weight: 600;
       font-size: 1.2rem;
       color: var(--color-text);
     }
     
+    /* Estilo inicial para a variável CSS */
+    #animatedLogoText {
+      --fill-percentage: 0%;
+    }
+
     @media (max-width: 768px) {
       .logo img {
         width: 50px;
       }
       
       .logo-text {
+      position: relative; /* Necessário para o pseudo-elemento */
+      background: linear-gradient(to right, var(--color-primary) var(--fill-percentage, 0%), var(--color-text) var(--fill-percentage, 100%));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: background 0.1s ease-out; /* Transição suave */
         font-size: 1rem;
       }
   }
