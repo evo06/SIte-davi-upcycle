@@ -4,8 +4,8 @@
 <section class="hero">
   <div class="container">
     <div class="hero-content">
-      <h1>Davi Rezende transformando<span> o  descartado</span>
-        <span> em Arte</span></h1>
+      <h1>Davi Rezende<span> arte sustentável</span>
+        <span>e upcycling</span></h1>
       <p>Soluções criativas de upcycling que combinam sustentabilidade e design exclusivo</p>
       <div class="hero-buttons">
         <a href="#trabalhos" class="btn">Portfólio</a>
@@ -20,14 +20,14 @@
       </div>
     </div>
   </div>
-  <div class="scroll-indicator">
+  <!-- <div class="scroll-indicator">
     <div class="mouse">
       <div class="wheel"></div>
     </div>
     <div>
       <span>Role para baixo</span>
     </div>
-  </div>
+  </div> -->
 </section>
 
 <style>
@@ -38,6 +38,8 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
+    background-size: cover; /* Default for larger screens */
+    background-position: center; /* Default for larger screens */
   }
   
   .hero .container {
@@ -189,21 +191,75 @@
   }
   
   @media (max-width: 992px) {
+    .hero {
+      /* background-image: url('/images/arts/IMG_8016.JPG'); */ /* Mobile background - REMOVED */
+      /* background-size: cover; */ /* REMOVED */
+      /* background-position: center; */ /* REMOVED */
+      position: relative; /* Ensure positioning context for pseudo-elements */
+      background-color: black;
+    }
+
+    .hero::after { /* New pseudo-element for background image with opacity */
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('/images/arts/IMG_8016.JPG');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.5; /* 20% opacity for the background image */
+      z-index: 0; /* Behind the ::before overlay and content */
+    }
+
+    .hero .image-container {
+      display: none; /* Hide the foreground image container on mobile */
+      opacity: 2%;
+
+    }
     .hero .container {
       grid-template-columns: 1fr;
       text-align: center;
     }
     
     .hero-content h1 {
-      font-size: 2.5rem;
+      font-size: 2.0rem;
+      color: white;
     }
     
     .hero-content p {
       margin: 0 auto 2rem;
+      color: white;
+
     }
     
     .hero-buttons {
       justify-content: center;
+      color: white;
+    }
+    
+    /* Estilos específicos para botões no mobile */
+    .hero-buttons .btn {
+      background-color: white !important;
+      color: black !important;
+      border: 1px solid white !important;
+    }
+    
+    .hero-buttons .btn:hover {
+      background-color: rgba(255, 255, 255, 0.9) !important;
+      color: black !important;
+    }
+    
+    .hero-buttons .btn-outline {
+      background-color: white !important;
+      color: black !important;
+      border: 1px solid white !important;
+    }
+    
+    .hero-buttons .btn-outline:hover {
+      background-color: rgba(255, 255, 255, 0.9) !important;
+      color: black !important;
     }
     
     .hero-image {

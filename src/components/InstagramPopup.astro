@@ -1,0 +1,73 @@
+---
+// src/components/InstagramPopup.astro
+---
+<div id="instagram-popup" class="instagram-popup hidden">
+  <div class="popup-content">
+    <button id="close-popup" class="close-button">&times;</button>
+    <h2>Siga-nos no Instagram!</h2>
+    <p>Fique por dentro das nossas novidades e projetos.</p>
+    <a href="https://www.instagram.com/davi.rez/" target="_blank" rel="noopener noreferrer" class="instagram-button">
+      Visitar Instagram
+    </a>
+  </div>
+</div>
+
+<style>
+  .instagram-popup {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .instagram-popup.hidden {
+    display: none;
+  }
+
+  .popup-content h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.5em;
+    color: #333;
+  }
+
+  .popup-content p {
+    margin-bottom: 20px;
+    font-size: 1em;
+    color: #555;
+  }
+
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #888;
+  }
+
+  .instagram-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #000000; /* Azul primário, pode ajustar */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+
+  .instagram-button:hover {
+    background-color: #000000; /* Azul mais escuro no hover */
+  }
+</style>

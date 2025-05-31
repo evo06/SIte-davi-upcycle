@@ -6,6 +6,7 @@ export interface Props {
 const { title } = Astro.props;
 // Import the WhatsApp button component
 import Button from '../components/button.astro';
+import InstagramPopup from '../components/InstagramPopup.astro'; // Importa o novo componente
 ---
 
 <!DOCTYPE html>
@@ -27,6 +28,50 @@ import Button from '../components/button.astro';
     <Button />
     
     <!-- scripts, etc. -->
+    <InstagramPopup /> <!-- Renderiza o componente do pop-up -->
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const popup = document.getElementById('instagram-popup');
+        const closeButton = document.getElementById('close-popup');
+        const popupShownKey = 'instagramPopupShown';
+
+        // Função para mostrar o pop-up
+        const showPopup = () => {
+          if (popup && !sessionStorage.getItem(popupShownKey)) {
+            popup.classList.remove('hidden');
+          }
+        };
+
+        // Função para esconder o pop-up
+        const hidePopup = () => {
+          if (popup) {
+            popup.classList.add('hidden');
+            sessionStorage.setItem(popupShownKey, 'true');
+          }
+        };
+
+        // Event listener para o botão de fechar
+        if (closeButton) {
+          closeButton.addEventListener('click', hidePopup);
+        }
+
+        // Event listener para o scroll da página
+        let scrollTriggered = false;
+        window.addEventListener('scroll', () => {
+          if (scrollTriggered || sessionStorage.getItem(popupShownKey)) return;
+
+          const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+          const totalHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          const scrollPercentage = (scrollPosition / totalHeight) * 100;
+
+          if (scrollPercentage >= 50) {
+            showPopup();
+            scrollTriggered = true; // Garante que o pop-up seja acionado apenas uma vez por carregamento de página, mesmo que o sessionStorage não seja usado
+          }
+        });
+      });
+    </script>
   </body>
 </html>
 
