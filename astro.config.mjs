@@ -9,5 +9,10 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 3000,
+    // Permite abrir o `npm run dev` / `npm run preview` por um túnel público
+    // da Cloudflare (cloudflared tunnel --url ...). Por segurança, esses
+    // servidores recusam domínios desconhecidos; liberamos só *.trycloudflare.com.
+    // Não afeta o site publicado (que é estático).
+    allowedHosts: ['.trycloudflare.com'],
   },
 });

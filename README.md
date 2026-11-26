@@ -9,6 +9,33 @@ npm run build    # gera o site estático em ./dist
 npm run preview  # serve o build localmente
 ```
 
+## Link público temporário (para mostrar a alguém)
+
+Um *Quick Tunnel* da Cloudflare gera uma URL `https://….trycloudflare.com` apontando para o site
+rodando no seu computador — sem conta e sem configurar DNS. O link vale enquanto os dois comandos
+abaixo estiverem rodando.
+
+1. Instale o `cloudflared` (uma vez só):
+   - Windows: `winget install --id Cloudflare.cloudflared`
+   - macOS: `brew install cloudflared`
+   - Linux: baixe em <https://github.com/cloudflare/cloudflared/releases>
+2. Terminal 1 — gere e sirva o site:
+   ```sh
+   npm install
+   npm run build
+   npm run preview        # http://localhost:3000
+   ```
+3. Terminal 2 — abra o túnel e copie a URL `trycloudflare.com` que aparecer:
+   ```sh
+   cloudflared tunnel --url http://localhost:3000
+   ```
+
+> O `astro.config.mjs` já libera domínios `.trycloudflare.com` em `server.allowedHosts`; sem isso o
+> servidor de preview responde "Blocked request" para o link do túnel.
+>
+> Para um link **permanente**, conecte este repositório ao Cloudflare Pages, Vercel ou Netlify
+> (plano gratuito, o Astro é detectado sozinho e cada `git push` publica uma nova versão).
+
 ## Onde editar o conteúdo
 
 | O quê | Arquivo |
