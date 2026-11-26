@@ -28,6 +28,9 @@ npm run preview  # serve o build localmente
 > Arquivos em `public/` são servidos como estão, sem compressão nem tamanhos responsivos.
 > Evite também ler propriedades da imagem importada no código (ex.: `imagem.width`): no Astro isso
 > faz o arquivo original inteiro ser copiado para o build.
+>
+> Hoje `public/` contém apenas o vídeo da baleia, o favicon e os logos da marca
+> (`logohori.svg` é a fonte vetorial do símbolo usado em `src/components/Logo.astro`).
 
 ## Sistema visual
 
@@ -37,7 +40,7 @@ Tudo parte dos *design tokens* em `src/styles/global.css`:
   para que a cor das obras seja o destaque.
 - **Tipografia:** Bricolage Grotesque (títulos e texto) + Instrument Serif itálico (palavras de
   destaque), self-hosted via Fontsource. A escala é fluida (`--step-*`, com `clamp()`).
-- **Grid:** 12 colunas no desktop; o portfólio segue um padrão editorial de 9 posições que se
+- **Grid:** 12 colunas no desktop; o portfólio segue um padrão editorial de 10 posições que se
   reorganiza sozinho quando o filtro esconde itens (`:nth-child(… of :not([hidden]))`).
 
 ## Princípios de movimento

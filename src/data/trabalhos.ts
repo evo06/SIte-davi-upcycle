@@ -8,6 +8,7 @@ import esculturaLeques from '../assets/trabalhos/escultura-leques.png';
 import planetaPet from '../assets/trabalhos/planeta-pet.jpg';
 import balancoOrelhao from '../assets/trabalhos/balanco-orelhao.webp';
 import esculturaBaleia from '../assets/trabalhos/escultura-baleia.webp';
+import esculturaPeixe from '../assets/trabalhos/escultura-peixe.png';
 import esculturaPolvo from '../assets/trabalhos/escultura-polvo.png';
 
 export type Categoria = 'Escultura' | 'Mobiliário' | 'Decoração';
@@ -89,6 +90,15 @@ export const TRABALHOS: Trabalho[] = [
     categoria: 'Escultura',
     imagem: esculturaBaleia,
     video: '/images/arts/videobaleia.mp4',
+  },
+  {
+    titulo: 'Escultura Peixe',
+    categoria: 'Escultura',
+    imagem: esculturaPeixe,
+    contexto: 'Sesc',
+    foco: '50% 62%',
+    descricao:
+      'Peixe com contorno em neon, preenchido com garrafas e resíduos plásticos, que carrega um alerta: “Em 2050, os oceanos poderão ter mais plásticos que peixes.” Parte de uma ação de educação ambiental do Sesc.',
   },
   {
     titulo: 'Escultura Polvo',

@@ -8,10 +8,10 @@ import shell from '../assets/parceiros/shell.webp';
 
 // Cada marca ligada à obra que fez com o Davi: mostra prova, não só logo.
 const parceiros = [
-  { nome: 'TV Globo', logo: globo, projeto: 'Escultura Onda', altura: 72 },
-  { nome: 'Shell', logo: shell, projeto: 'Escultura com leques', altura: 80 },
-  { nome: 'Corona', logo: corona, projeto: 'Planeta Pet', altura: 66 }, // arquivo original tem só 135px
-  { nome: 'Sesc', logo: sesc, projeto: 'Banco Sol', altura: 60 },
+  { nome: 'TV Globo', logo: globo, projetos: ['Escultura Onda'], altura: 72 },
+  { nome: 'Shell', logo: shell, projetos: ['Escultura com leques'], altura: 80 },
+  { nome: 'Corona', logo: corona, projetos: ['Planeta Pet'], altura: 66 }, // arquivo original tem só 135px
+  { nome: 'Sesc', logo: sesc, projetos: ['Banco Sol', 'Peixe'], altura: 60 },
 ];
 ---
 
@@ -55,8 +55,8 @@ const parceiros = [
               />
             </div>
             <p class="marca__projeto">
-              <span class="marca__rotulo">Projeto</span>
-              {p.projeto}
+              <span class="marca__rotulo">{p.projetos.length > 1 ? 'Projetos' : 'Projeto'}</span>
+              <span>{p.projetos.join(' e ')}</span>
             </p>
           </li>
         ))

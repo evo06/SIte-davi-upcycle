@@ -28,9 +28,8 @@ const obras = await Promise.all(
   }),
 );
 
-/* O padrão do grid se repete a cada 9 obras: grande + menor deslocada,
-   depois três médias em degraus. Os tamanhos abaixo informam ao navegador
-   qual largura de imagem baixar em cada caso. */
+/* `sizes` diz ao navegador a largura que cada card ocupa no grid editorial
+   (ver CSS abaixo), para ele baixar só a versão de imagem necessária. */
 const sizes = '(min-width: 1360px) 560px, (min-width: 1024px) 42vw, (min-width: 640px) 46vw, 92vw';
 ---
 
@@ -461,7 +460,8 @@ const sizes = '(min-width: 1360px) 560px, (min-width: 1024px) 42vw, (min-width: 
     }
   }
 
-  /* Desktop: grid editorial de 12 colunas, padrão de 9 posições.
+  /* Desktop: grid editorial de 12 colunas, padrão de 10 posições:
+     [grande + menor deslocada] [3 em degraus] [menor + grande] [3 em degraus].
      `:nth-child(… of :not([hidden]))` recalcula o padrão quando o filtro
      esconde itens — sem JavaScript para o layout. */
   @media (min-width: 1024px) {
@@ -471,37 +471,33 @@ const sizes = '(min-width: 1360px) 560px, (min-width: 1024px) 42vw, (min-width: 
       row-gap: clamp(4rem, 2rem + 5vw, 8rem);
     }
 
-    .obra:nth-child(9n + 1 of :not([hidden])) {
+    .obra:nth-child(10n + 1 of :not([hidden])) {
       grid-column: 1 / span 6;
     }
-    .obra:nth-child(9n + 2 of :not([hidden])) {
+    .obra:nth-child(10n + 2 of :not([hidden])) {
       grid-column: 8 / span 5;
       margin-top: clamp(6rem, 14vw, 14rem);
     }
-    .obra:nth-child(9n + 3 of :not([hidden])) {
+    .obra:nth-child(10n + 3 of :not([hidden])),
+    .obra:nth-child(10n + 8 of :not([hidden])) {
       grid-column: 1 / span 4;
     }
-    .obra:nth-child(9n + 4 of :not([hidden])) {
+    .obra:nth-child(10n + 4 of :not([hidden])),
+    .obra:nth-child(10n + 9 of :not([hidden])) {
       grid-column: 5 / span 4;
       margin-top: clamp(4rem, 8vw, 8rem);
     }
-    .obra:nth-child(9n + 5 of :not([hidden])) {
+    .obra:nth-child(10n + 5 of :not([hidden])),
+    .obra:nth-child(10n + 10 of :not([hidden])) {
       grid-column: 9 / span 4;
       margin-top: clamp(2rem, 4vw, 4rem);
     }
-    .obra:nth-child(9n + 6 of :not([hidden])) {
+    .obra:nth-child(10n + 6 of :not([hidden])) {
       grid-column: 2 / span 5;
       margin-top: clamp(6rem, 12vw, 12rem);
     }
-    .obra:nth-child(9n + 7 of :not([hidden])) {
+    .obra:nth-child(10n + 7 of :not([hidden])) {
       grid-column: 7 / span 6;
-    }
-    .obra:nth-child(9n + 8 of :not([hidden])) {
-      grid-column: 1 / span 4;
-    }
-    .obra:nth-child(9n + 9 of :not([hidden])) {
-      grid-column: 6 / span 5;
-      margin-top: clamp(4rem, 9vw, 9rem);
     }
   }
 
