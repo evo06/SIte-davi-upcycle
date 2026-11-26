@@ -1,157 +1,115 @@
 ---
-export interface Props {
-  title: string;
+import { getImage } from 'astro:assets';
+
+// Fontes self-hosted: sem requisição ao Google (privacidade/LGPD e
+// menos uma conexão bloqueando a renderização).
+import '@fontsource-variable/bricolage-grotesque/opsz.css';
+import '@fontsource/instrument-serif/400-italic.css';
+import fonteDisplay from '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-opsz-normal.woff2?url';
+import '../styles/global.css';
+
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import InstagramToast from '../components/InstagramToast.astro';
+import { SITE } from '../data/site';
+import imagemCompartilhamento from '../assets/hero/planeta-pet-horizontal.jpg';
+
+interface Props {
+  title?: string;
+  description?: string;
 }
 
-const { title } = Astro.props;
-// Import the WhatsApp button component
-import Button from '../components/button.astro';
-import InstagramPopup from '../components/InstagramPopup.astro'; // Importa o novo componente
+const { title = SITE.titulo, description = SITE.descricao } = Astro.props;
+
+const site = Astro.site ?? new URL(SITE.url);
+const canonical = new URL(Astro.url.pathname, site);
+const og = await getImage({ src: imagemCompartilhamento, width: 1200, height: 630, format: 'jpg' });
+const ogUrl = new URL(og.src, site);
+
+// Dados estruturados: ajudam o Google a entender quem é o artista,
+// onde atua e como contatar (pode gerar resultados mais ricos na busca).
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: SITE.nome,
+  jobTitle: 'Artista e designer de upcycling',
+  description,
+  url: site.href,
+  image: ogUrl.href,
+  email: `mailto:${SITE.email}`,
+  telephone: '+55-21-98222-1872',
+  sameAs: [SITE.instagram.url],
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: SITE.endereco.rua,
+    addressLocality: 'Rio de Janeiro',
+    addressRegion: 'RJ',
+    postalCode: SITE.endereco.cep,
+    addressCountry: 'BR',
+  },
+};
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#f2f0ea" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <link rel="apple-touch-icon" href="/images/favicon.png" />
+
+    <!-- Open Graph: cartão bonito ao compartilhar no WhatsApp/Instagram/LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={SITE.nome} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Pré-carrega a fonte principal para o título aparecer sem "piscar". -->
+    <link rel="preload" href={fonteDisplay} as="font" type="font/woff2" crossorigin />
+
+    <!-- Marca que o JS está ativo antes da primeira pintura: os estados
+         "escondidos" das revelações só existem quando o JS pode desfazê-los. -->
+    <script is:inline>document.documentElement.classList.add('js');</script>
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
   <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
     <slot />
-    
-    <!-- WhatsApp floating button that will appear on all pages -->
-    <Button />
-    
-    <!-- scripts, etc. -->
-    <InstagramPopup /> <!-- Renderiza o componente do pop-up -->
+    <WhatsAppFloat />
+    <InstagramToast />
 
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const popup = document.getElementById('instagram-popup');
-        const closeButton = document.getElementById('close-popup');
-        const popupShownKey = 'instagramPopupShown';
+      // Revela imagens marcadas com .reveal quando entram na tela — uma vez só.
+      // (Reanimar a cada passagem do scroll cansa e vira ruído.)
+      const reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const alvos = document.querySelectorAll<HTMLElement>('.reveal');
 
-        // Função para mostrar o pop-up
-        const showPopup = () => {
-          if (popup && !sessionStorage.getItem(popupShownKey)) {
-            popup.classList.remove('hidden');
-          }
-        };
-
-        // Função para esconder o pop-up
-        const hidePopup = () => {
-          if (popup) {
-            popup.classList.add('hidden');
-            sessionStorage.setItem(popupShownKey, 'true');
-          }
-        };
-
-        // Event listener para o botão de fechar
-        if (closeButton) {
-          closeButton.addEventListener('click', hidePopup);
-        }
-
-        // Event listener para o scroll da página
-        let scrollTriggered = false;
-        window.addEventListener('scroll', () => {
-          if (scrollTriggered || sessionStorage.getItem(popupShownKey)) return;
-
-          const scrollPosition = window.scrollY || document.documentElement.scrollTop;
-          const totalHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-          const scrollPercentage = (scrollPosition / totalHeight) * 100;
-
-          if (scrollPercentage >= 50) {
-            showPopup();
-            scrollTriggered = true; // Garante que o pop-up seja acionado apenas uma vez por carregamento de página, mesmo que o sessionStorage não seja usado
-          }
-        });
-      });
+      if (reduz || !('IntersectionObserver' in window)) {
+        alvos.forEach((el) => el.classList.add('is-revealed'));
+      } else {
+        const observer = new IntersectionObserver(
+          (entradas) => {
+            for (const entrada of entradas) {
+              if (!entrada.isIntersecting) continue;
+              entrada.target.classList.add('is-revealed');
+              observer.unobserve(entrada.target);
+            }
+          },
+          { rootMargin: '0px 0px -12% 0px' },
+        );
+        alvos.forEach((el) => observer.observe(el));
+      }
     </script>
   </body>
 </html>
-
-<style is:global>
-  :root {
-    --color-primary: #000000;
-    --color-secondary: #fff;
-    --color-accent: #333;
-    --color-text: #333;
-    --color-logo: #000;
-    --font-family: 'Montserrat', sans-serif;
-  }
-  
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  html {
-    font-family: var(--font-family);
-    scroll-behavior: smooth;
-  }
-  
-  body {
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
-    line-height: 1.6;
-  }
-  
-  img {
-    max-width: 100%;
-    height: auto;
-  }
-  
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-  
-  .container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
-  
-  .section {
-    padding: 5rem 0;
-  }
-  
-  .btn {
-    display: inline-block;
-    padding: 0.8rem 1.5rem;
-    background-color: var(--color-primary);
-    color: var(--color-secondary);
-    border: 1px solid var(--color-primary);
-    font-weight: 500;
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
-  
-  .btn:hover {
-    background-color: transparent;
-    color: var(--color-primary);
-  }
-  
-  .btn-outline {
-    background-color: transparent;
-    color: var(--color-primary);
-  }
-  
-  .btn-outline:hover {
-    background-color: var(--color-primary);
-    color: var(--color-secondary);
-  }
-  
-  @media (max-width: 768px) {
-    .section {
-      padding: 3rem 0;
-    }
-  }
-</style>

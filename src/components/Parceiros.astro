@@ -1,246 +1,136 @@
 ---
+import { Image } from 'astro:assets';
+import SectionHeader from './SectionHeader.astro';
+import corona from '../assets/parceiros/corona.png';
+import globo from '../assets/parceiros/globo.webp';
+import sesc from '../assets/parceiros/sesc.png';
+import shell from '../assets/parceiros/shell.webp';
+
+// Cada marca ligada à obra que fez com o Davi: mostra prova, não só logo.
 const parceiros = [
-  {
-    nome: "Corona",
-    logo: "/images/empresas/download.png"
-  },
-  {
-    nome: "Globo",
-    logo: "/images/empresas/globo.webp"
-  },
-  {
-    nome: "Sesc",
-    logo: "/images/empresas/sesc.png"
-  },
-  {
-    nome: "Shell",
-    logo: "/images/empresas/shell.webp"
-  },
-  // {
-  //   nome: "Nova Vida",
-  //   logo: "/images/empresas/globo.webp"
-  // }
+  { nome: 'TV Globo', logo: globo, projeto: 'Escultura Onda', altura: 72 },
+  { nome: 'Shell', logo: shell, projeto: 'Escultura com leques', altura: 80 },
+  { nome: 'Corona', logo: corona, projeto: 'Planeta Pet', altura: 66 }, // arquivo original tem só 135px
+  { nome: 'Sesc', logo: sesc, projeto: 'Banco Sol', altura: 60 },
 ];
 ---
 
-<section id="parceiros" class="section parceiros">
+<section class="parceiros" id="parceiros" aria-labelledby="parceiros-titulo">
+  <!-- Tom monocromático dos logos: tira a cor e aplica uma curva gama.
+       A gama escurece os tons médios (o gradiente do Globo ficava cinza-claro
+       com grayscale puro) mas mantém o branco branco, então o fundo branco
+       do logo da Shell continua sumindo no papel com o multiply. -->
+  <svg class="sr-only" aria-hidden="true" focusable="false">
+    <filter id="tom-logo" color-interpolation-filters="sRGB">
+      <feColorMatrix type="saturate" values="0" />
+      <feComponentTransfer>
+        <feFuncR type="gamma" amplitude="1" exponent="2.6" offset="0" />
+        <feFuncG type="gamma" amplitude="1" exponent="2.6" offset="0" />
+        <feFuncB type="gamma" amplitude="1" exponent="2.6" offset="0" />
+      </feComponentTransfer>
+    </filter>
+  </svg>
+
   <div class="container">
-    <div class="section-header">
-      <h2>Nossos Parceiros</h2>
-      <div class="divider"></div>
-      <p>Empresas que acreditam no nosso compromisso e caminham conosco rumo a soluções sustentáveis, gerando valor não apenas para o presente, mas também para as próximas gerações.</p>
-    </div>
-    
-    <div class="parceiros-slider">
-      {parceiros.map(parceiro => (
-        <div class="parceiro-item">
-          <img src={parceiro.logo} alt={parceiro.nome} />
-        </div>
-      ))}
-    </div>
-    
-    <!-- <div class="depoimentos">
-      <div class="depoimento">
-        <div class="depoimento-texto">
-          <p>"O trabalho de upcycling realizado transformou completamente nosso espaço. Além de sustentável, as peças são verdadeiras obras de arte que contam histórias."</p>
-        </div>
-        <div class="depoimento-autor">
-          <div class="autor-img">
-            <img src="/images/marinasilva.jpg" alt="Cliente" />
-          </div>
-          <div class="autor-info">
-            <h4>Marina Silva</h4>
-            <p>Diretora Criativa, EcoDesign Brasil</p>
-          </div>
-        </div>
-      </div>
-    </div> -->
+    <SectionHeader index="03" label="Parceiros" titleId="parceiros-titulo">
+      Marcas que acreditam na <em class="serif">transformação</em>
+      <p slot="intro">
+        Empresas que caminham conosco rumo a soluções sustentáveis, gerando valor para o presente e para as
+        próximas gerações.
+      </p>
+    </SectionHeader>
+
+    <ul class="marcas">
+      {
+        parceiros.map((p) => (
+          <li class="marca">
+            <div class="marca__logo">
+              <Image
+                src={p.logo}
+                alt={p.nome}
+                height={p.altura * 2}
+                style={`--altura:${p.altura}px`}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <p class="marca__projeto">
+              <span class="marca__rotulo">Projeto</span>
+              {p.projeto}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
   </div>
 </section>
 
 <style>
   .parceiros {
-    background-color: #f9f9f9;
+    padding-block: var(--section-space);
   }
-  
-  .parceiros-slider {
+
+  .marcas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+
+  .marca {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: 1.5rem;
+    padding: clamp(1.25rem, 0.8rem + 1.5vw, 2rem);
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .marca__logo {
+    display: grid;
+    place-items: center;
+    min-height: clamp(7rem, 5rem + 6vw, 11rem);
+  }
+
+  /* Logos em tons de cinza e fundidos ao papel (multiply some com o branco):
+     uma faixa uniforme em vez de 4 manchas de cor competindo com as obras. */
+  .marca__logo :global(img) {
+    width: auto;
+    height: var(--altura);
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: url(#tom-logo);
+    mix-blend-mode: multiply;
+  }
+
+  .marca__projeto {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin: 3rem 0;
-  }
-  
-  .parceiro-item {
-    flex: 0 0 150px;
-    width: 150px;
-    height: 150px;
-    padding: 1rem;
-    background-color: white;
-    border-radius: 50%;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.3s ease;
-    overflow: hidden;
-    border: 2px solid #f0f0f0;
-  }
-  
-  .parceiro-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  }
-  
-  .parceiro-item img {
-    max-width: 70%;
-    height: auto;
-    max-height: 70%;
-    object-fit: contain;
-  }
-  
-  .depoimentos {
-    margin-top: 4rem;
-  }
-  
-  .depoimento {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  }
-  
-  .depoimento-texto {
-    font-style: italic;
-    position: relative;
-  }
-  
-  .depoimento-texto p {
-    position: relative;
-    z-index: 1;
-  }
-  
-  .depoimento-autor {
-    display: flex;
-    align-items: center;
     gap: 1rem;
-    margin-top: 1.5rem;
+    font-size: var(--step--1);
+    font-weight: 500;
   }
-  
-  .autor-img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid white;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+
+  .marca__rotulo {
+    color: var(--ink-soft);
+    font-weight: 400;
   }
-  
-  .autor-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .autor-info h4 {
-    margin: 0 0 0.3rem;
-    font-size: 1.1rem;
-  }
-  
-  .autor-info p {
-    margin: 0;
-    font-size: 0.9rem;
-    opacity: 0.7;
-  }
-  
-  @media (max-width: 768px) {
-    .parceiros-slider {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      justify-content: center;
-      justify-items: center;
-      width: 100%;
+
+  @media (min-width: 900px) {
+    .marcas {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
-    
-    .parceiro-item {
-      flex: none;
-      width: 100px;
-      height: 100px;
-      min-width: unset;
-      max-width: unset;
-      margin: 0 auto;
-      padding: 0.8rem;
+  }
+
+  @media (max-width: 480px) {
+    .marca__logo :global(img) {
+      height: calc(var(--altura) * 0.7);
     }
-    
-    .parceiro-item img {
-      max-width: 65%;
-      max-height: 65%;
+
+    .marca__projeto {
+      flex-direction: column;
+      gap: 0.15rem;
     }
   }
 </style>
-
-<script>
-  // Script para criar um carrossel infinito que mostra todos os parceiros
-  document.addEventListener('DOMContentLoaded', () => {
-    const slider = document.querySelector('.parceiros-slider');
-    
-    if (slider && window.innerWidth <= 768) {
-      let scrollAmount = 0;
-      const scrollMax = slider.scrollWidth - slider.clientWidth;
-      const scrollStep = 1;
-      const scrollInterval = 30;
-      
-      let autoScroll = setInterval(() => {
-        slider.scrollLeft += scrollStep;
-        scrollAmount += scrollStep;
-        
-        // Quando chegar ao final, volte ao início suavemente
-        if (slider.scrollLeft >= scrollMax) {
-          // Reinicia o scroll suavemente
-          scrollAmount = 0;
-          slider.scrollLeft = 0;
-        }
-      }, scrollInterval);
-      
-      // Pausa a animação quando o usuário interage
-      slider.addEventListener('mouseenter', () => {
-        clearInterval(autoScroll);
-      });
-      
-      slider.addEventListener('touchstart', () => {
-        clearInterval(autoScroll);
-      }, { passive: true });
-      
-      // Reinicia a animação quando o usuário para de interagir
-      slider.addEventListener('mouseleave', () => {
-        scrollAmount = slider.scrollLeft;
-        
-        autoScroll = setInterval(() => {
-          slider.scrollLeft += scrollStep;
-          scrollAmount += scrollStep;
-          
-          if (slider.scrollLeft >= scrollMax) {
-            scrollAmount = 0;
-            slider.scrollLeft = 0;
-          }
-        }, scrollInterval);
-      });
-      
-      slider.addEventListener('touchend', () => {
-        scrollAmount = slider.scrollLeft;
-        
-        autoScroll = setInterval(() => {
-          slider.scrollLeft += scrollStep;
-          scrollAmount += scrollStep;
-          
-          if (slider.scrollLeft >= scrollMax) {
-            scrollAmount = 0;
-            slider.scrollLeft = 0;
-          }
-        }, scrollInterval);
-      });
-    }
-  });
-</script>

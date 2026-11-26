@@ -1,0 +1,102 @@
+---
+import Icon from './Icon.astro';
+import { SITE } from '../data/site';
+---
+
+<a
+  class="whats"
+  href={SITE.whatsapp}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Conversar com Davi Rezende no WhatsApp"
+  data-whats
+>
+  <Icon name="whatsapp" class="whats__icone" />
+</a>
+
+<script>
+  /* Aparece só depois do hero (lá já existe o botão "Fale comigo") e some
+     na seção de contato (onde o CTA grande já cumpre o papel). */
+  const botao = document.querySelector<HTMLElement>('[data-whats]')!;
+  const hero = document.querySelector('#topo');
+  const contato = document.querySelector('#contato');
+  let heroVisivel = true;
+  let contatoVisivel = false;
+
+  const atualizar = () => botao.toggleAttribute('data-visivel', !heroVisivel && !contatoVisivel);
+
+  const io = new IntersectionObserver(
+    (entradas) => {
+      for (const e of entradas) {
+        if (e.target === hero) heroVisivel = e.isIntersecting;
+        if (e.target === contato) contatoVisivel = e.isIntersecting;
+      }
+      atualizar();
+    },
+    { rootMargin: '0px 0px -30% 0px' },
+  );
+  if (hero) io.observe(hero);
+  if (contato) io.observe(contato);
+</script>
+
+<style>
+  .whats {
+    position: fixed;
+    right: max(1.25rem, env(safe-area-inset-right));
+    bottom: max(1.25rem, env(safe-area-inset-bottom));
+    z-index: 40;
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--whatsapp);
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.12),
+      0 8px 24px -6px rgb(0 0 0 / 0.3);
+
+    /* Escondido: um pouco abaixo e menor (nunca scale(0)). Sair é mais
+       rápido que entrar. */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px) scale(0.92);
+    transition:
+      opacity 200ms ease,
+      transform 200ms var(--ease-out),
+      visibility 0s linear 200ms;
+  }
+
+  .whats[data-visivel] {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      opacity var(--dur-ui) ease,
+      transform 400ms var(--ease-out),
+      visibility 0s;
+  }
+
+  .whats:active {
+    transform: scale(0.94);
+    transition-duration: var(--dur-press);
+  }
+
+  .whats :global(.whats__icone) {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .whats[data-visivel]:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .whats,
+    .whats[data-visivel] {
+      transform: none;
+    }
+  }
+</style>

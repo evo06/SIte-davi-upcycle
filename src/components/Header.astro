@@ -1,211 +1,463 @@
 ---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { NAV, SITE } from '../data/site';
 ---
 
-<header class="header">
-  <div class="container">
-    <nav class="nav">
-      <div class="logo">
-        <!-- <img src="/images/logo.png" alt="logo"> -->
-        <span class="logo-text" id="animatedLogoText">Davi Rezende</span>
-      </div>
-      <div class="nav-toggle" id="navToggle">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-      <ul class="nav-menu" id="navMenu">
-        <li><a href="#sobre">Sobre</a></li>
-        <li><a href="#trabalhos">Trabalhos</a></li>
-        <li><a href="#parceiros">Parceiros</a></li>
-        <li><a href="#contato">Contato</a></li>
+<header class="header" data-header>
+  <div class="container header__bar">
+    <a href="#topo" class="brand" aria-label={`${SITE.nome} — voltar ao início`}>
+      <Logo class="brand__mark" />
+      <span class="brand__name">{SITE.nome}</span>
+    </a>
+
+    <nav class="nav" aria-label="Principal">
+      <ul class="nav__list">
+        {
+          NAV.map((item) => (
+            <li>
+              <a class="nav__link" href={item.href} data-nav-link>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
       </ul>
     </nav>
+
+    <a class="btn btn--sm header__cta" href={SITE.whatsapp} target="_blank" rel="noopener noreferrer">
+      Fale comigo
+      <Icon name="arrow-ne" class="btn__icon btn__icon--ne" />
+    </a>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="menu-mobile"
+      data-menu-toggle
+    >
+      <span class="sr-only" data-menu-label>Abrir menu</span>
+      <span class="menu-toggle__lines" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <div class="menu" id="menu-mobile" data-menu>
+    <div class="container menu__inner">
+      <nav aria-label="Menu">
+        <ol class="menu__list">
+          {
+            NAV.map((item, i) => (
+              <li class="menu__item" style={`--i:${i}`}>
+                <a class="menu__link" href={item.href} data-menu-link>
+                  <span class="menu__index">{String(i + 1).padStart(2, '0')}</span>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+      </nav>
+      <div class="menu__footer menu__item" style="--i:4">
+        <a class="btn" href={SITE.whatsapp} target="_blank" rel="noopener noreferrer">
+          Conversar no WhatsApp
+          <Icon name="arrow-ne" class="btn__icon btn__icon--ne" />
+        </a>
+        <a class="link" href={SITE.instagram.url} target="_blank" rel="noopener noreferrer">
+          Instagram {SITE.instagram.usuario}
+        </a>
+      </div>
+    </div>
   </div>
 </header>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const animatedLogoText = document.getElementById('animatedLogoText');
+  const header = document.querySelector<HTMLElement>('[data-header]')!;
+  const toggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
+  const label = header.querySelector<HTMLElement>('[data-menu-label]')!;
+  const menu = header.querySelector<HTMLElement>('[data-menu]')!;
+  const fundo = document.querySelectorAll<HTMLElement>('main, footer');
 
-    function updateLogoTextFill() {
-      if (!animatedLogoText) return;
+  /* ---- Estado "rolado": o header ganha fundo só quando há conteúdo atrás.
+     Um elemento sentinela + IntersectionObserver evita escutar todo evento
+     de scroll (mais barato que window.onscroll). */
+  const sentinela = document.createElement('div');
+  sentinela.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:8px;pointer-events:none';
+  document.body.prepend(sentinela);
+  new IntersectionObserver(([e]) => {
+    header.toggleAttribute('data-scrolled', !e.isIntersecting);
+  }).observe(sentinela);
 
-      const scrollPosition = window.scrollY;
-      // Defina uma altura de scroll para a animação completar (ex: 200px)
-      // Ou pode ser a altura de uma seção específica
-      const maxScroll = 200; 
-      let fillPercentage = (scrollPosition / maxScroll) * 100;
-      fillPercentage = Math.min(100, Math.max(0, fillPercentage)); // Garante que fique entre 0 e 100
+  /* ---- Tema: o header se inverte quando passa sobre uma seção escura.
+     Observa só uma faixa fina no topo da tela (onde o header está). */
+  const escuras = new Set<Element>();
+  const observerTema = new IntersectionObserver(
+    (entradas) => {
+      for (const e of entradas) {
+        if (e.isIntersecting) escuras.add(e.target);
+        else escuras.delete(e.target);
+      }
+      header.toggleAttribute('data-escuro', escuras.size > 0);
+    },
+    { rootMargin: '0px 0px -94% 0px' },
+  );
+  document.querySelectorAll('[data-tema="escuro"]').forEach((el) => observerTema.observe(el));
 
-      animatedLogoText.style.setProperty('--fill-percentage', `${fillPercentage}%`);
+  /* ---- Menu mobile ---- */
+  const setMenu = (aberto: boolean, { devolverFoco = true } = {}) => {
+    toggle.setAttribute('aria-expanded', String(aberto));
+    label.textContent = aberto ? 'Fechar menu' : 'Abrir menu';
+    header.toggleAttribute('data-menu-open', aberto);
+    document.documentElement.style.overflow = aberto ? 'hidden' : '';
+    // `inert` tira o resto da página do foco e do leitor de tela
+    // enquanto o menu cobre a tela.
+    fundo.forEach((el) => (el.inert = aberto));
+    if (aberto) {
+      menu.querySelector<HTMLElement>('[data-menu-link]')?.focus({ preventScroll: true });
+    } else if (devolverFoco) {
+      toggle.focus({ preventScroll: true });
     }
+  };
 
-    window.addEventListener('scroll', updateLogoTextFill);
-    updateLogoTextFill(); // Chama uma vez para definir o estado inicial
-
-    const navToggle = document.getElementById('navToggle');
-    const navMenu = document.getElementById('navMenu');
-    
-    navToggle?.addEventListener('click', () => {
-      navToggle.classList.toggle('active');
-      navMenu?.classList.toggle('active');
-    });
+  toggle.addEventListener('click', () => {
+    setMenu(toggle.getAttribute('aria-expanded') !== 'true');
   });
+
+  menu.querySelectorAll('a').forEach((link) =>
+    link.addEventListener('click', () => setMenu(false, { devolverFoco: false })),
+  );
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && header.hasAttribute('data-menu-open')) setMenu(false);
+  });
+
+  // Se a tela crescer com o menu aberto (girar o tablet), fecha sem travar o scroll.
+  window.matchMedia('(min-width: 900px)').addEventListener('change', (e) => {
+    if (e.matches && header.hasAttribute('data-menu-open')) setMenu(false, { devolverFoco: false });
+  });
+
+  /* ---- Seção atual no menu (orientação: "onde estou?") ---- */
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]')];
+  const secoes = links
+    .map((a) => document.querySelector<HTMLElement>(a.hash))
+    .filter((s): s is HTMLElement => Boolean(s));
+
+  const marcar = (id: string | null) => {
+    links.forEach((a) => {
+      if (a.hash === `#${id}`) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    });
+  };
+
+  // Um único observer com a mesma faixa (o meio da tela) para hero e seções:
+  // quem estiver no centro define o item ativo. No hero, nenhum fica marcado.
+  const observerSecoes = new IntersectionObserver(
+    (entradas) => {
+      for (const e of entradas) {
+        if (e.isIntersecting) marcar(e.target.id === 'topo' ? null : e.target.id);
+      }
+    },
+    { rootMargin: '-45% 0px -50% 0px' },
+  );
+  const hero = document.querySelector<HTMLElement>('#topo');
+  [hero, ...secoes].forEach((s) => s && observerSecoes.observe(s));
 </script>
 
 <style>
   .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 100;
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(5px);
-    padding: 1rem 0;
-    transition: all 0.3s ease;
-  }
-  
-  .nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .logo img {
-      width: 70px;
-      height: auto;
-    }
-    
-    .logo-text {
-      position: relative; /* Necessário para o pseudo-elemento */
-      background: linear-gradient(to right, var(--color-primary) var(--fill-percentage, 0%), var(--color-text) var(--fill-percentage, 0%));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      transition: background 0.1s ease-out; /* Transição suave */
-      font-weight: 600;
-      font-size: 1.2rem;
-      color: var(--color-text);
-    }
-    
-    /* Estilo inicial para a variável CSS */
-    #animatedLogoText {
-      --fill-percentage: 0%;
-    }
+    --header-bg: rgb(242 240 234 / 0.82);
 
-    @media (max-width: 768px) {
-      .logo img {
-        width: 50px;
-      }
-      
-      .logo-text {
-      position: relative; /* Necessário para o pseudo-elemento */
-      background: linear-gradient(to right, var(--color-primary) var(--fill-percentage, 0%), var(--color-text) var(--fill-percentage, 0%));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      transition: background 0.1s ease-out; /* Transição suave */
-        font-size: 1rem;
-      }
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    color: var(--ink);
+    transition: color var(--dur-ui) ease;
   }
-  
-  .nav-menu {
-    display: flex;
-    list-style: none;
-    gap: 2rem;
+
+  /* Sobre seções escuras os tokens se invertem: texto, botão e menu
+     acompanham automaticamente, sem duplicar regras. */
+  .header[data-escuro] {
+    --ink: #f2f0ea;
+    --ink-soft: #a3a097;
+    --paper: #151513;
+    --paper-deep: #2a2a27;
+    --line: rgb(242 240 234 / 0.16);
+    --header-bg: rgb(21 21 19 / 0.78);
   }
-  
-  .nav-menu a {
-    position: relative;
-    font-weight: 500;
+
+  @media (hover: hover) and (pointer: fine) {
+    .header[data-escuro] :global(.btn:hover) {
+      --btn-bg: #ffffff;
+      --btn-border: #ffffff;
+    }
   }
-  
-  .nav-menu a::after {
+
+  /* Fundo separado num pseudo-elemento: assim só a opacidade transiciona
+     (barato), em vez de animar background + blur. */
+  .header::before {
     content: '';
     position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background-color: var(--color-primary);
-    transition: width 0.3s ease;
+    inset: 0;
+    z-index: -1;
+    background: var(--header-bg);
+    backdrop-filter: blur(18px) saturate(160%);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    border-bottom: 1px solid var(--line);
+    opacity: 0;
+    transition:
+      opacity var(--dur-ui) ease,
+      background-color var(--dur-ui) ease,
+      border-color var(--dur-ui) ease;
   }
-  
-  .nav-menu a:hover::after {
-    width: 100%;
+
+  .header[data-scrolled]::before {
+    opacity: 1;
   }
-  
-  .nav-toggle {
+
+  .header__bar {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    height: var(--header-h);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-right: auto;
+    font-weight: 600;
+    font-size: 1.0625rem;
+    letter-spacing: -0.02em;
+  }
+
+  .brand :global(.brand__mark) {
+    width: 1.75rem;
+    height: auto;
+    transition: transform 700ms var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .brand:hover :global(.brand__mark) {
+      transform: rotate(60deg);
+    }
+  }
+
+  .nav__list {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .nav__link {
+    position: relative;
+    display: inline-block;
+    padding-block: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    transition: color var(--dur-hover) ease;
+  }
+
+  /* Ponto que indica a seção atual. */
+  .nav__link::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -0.8rem;
+    width: 5px;
+    height: 5px;
+    margin-top: -2.5px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0;
+    transform: scale(0.5);
+    transition:
+      opacity var(--dur-hover) ease,
+      transform var(--dur-ui) var(--ease-out);
+  }
+
+  .nav__link[aria-current] {
+    color: var(--ink);
+  }
+
+  .nav__link[aria-current]::before {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .nav__link:hover {
+      color: var(--ink);
+    }
+  }
+
+  /* ---- Botão do menu (2 linhas que viram um X) ---- */
+  .menu-toggle {
     display: none;
+    position: relative;
+    width: 2.75rem;
+    height: 2.75rem; /* área de toque mínima de 44px */
+    margin-right: -0.6rem;
+  }
+
+  .menu-toggle__lines,
+  .menu-toggle__lines::before {
+    position: absolute;
+    left: 50%;
+    width: 1.375rem;
+    height: 1.5px;
+    margin-left: -0.6875rem;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform var(--dur-ui) var(--ease-in-out);
+  }
+
+  .menu-toggle__lines {
+    top: calc(50% - 3.5px);
+  }
+
+  .menu-toggle__lines::before {
+    content: '';
+    top: 7px;
+    left: 0;
+    margin-left: 0;
+  }
+
+  .header[data-menu-open] .menu-toggle__lines {
+    transform: translateY(3.5px) rotate(45deg);
+  }
+
+  .header[data-menu-open] .menu-toggle__lines::before {
+    transform: translateY(-7px) rotate(-90deg);
+  }
+
+  /* ---- Menu em tela cheia (mobile) ---- */
+  .menu {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    display: none;
+    padding-top: var(--header-h);
+    background: var(--paper);
+    visibility: hidden;
+    clip-path: inset(0 0 100% 0);
+    /* Fechar é mais rápido que abrir: a pessoa já decidiu sair. */
+    transition:
+      clip-path 380ms var(--ease-in-out),
+      visibility 0s linear 380ms;
+  }
+
+  .header[data-menu-open] .menu {
+    visibility: visible;
+    clip-path: inset(0 0 0 0);
+    transition:
+      clip-path 560ms var(--ease-drawer),
+      visibility 0s;
+  }
+
+  .menu__inner {
+    display: flex;
     flex-direction: column;
-    gap: 5px;
-    cursor: pointer;
+    justify-content: space-between;
+    height: 100%;
+    padding-block: 2rem max(2rem, env(safe-area-inset-bottom));
   }
-  
-  .nav-toggle span {
-    display: block;
-    width: 25px;
-    height: 2px;
-    background-color: var(--color-primary);
-    transition: all 0.3s ease;
+
+  .menu__list {
+    display: grid;
+    border-top: 1px solid var(--line);
   }
-  
-  @media (max-width: 768px) {
-    .nav-toggle {
-      display: flex;
+
+  .menu__link {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 1.1rem;
+    border-bottom: 1px solid var(--line);
+    font-size: clamp(2.25rem, 1.6rem + 3vw, 3.25rem);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+
+  .menu__index {
+    font-size: var(--step--1);
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .menu__footer {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+  }
+
+  /* Itens entram em sequência curta e desigual (o 1º lidera, os demais
+     seguem cada vez mais próximos). Ao fechar, saem todos juntos. */
+  .menu__item {
+    opacity: 0;
+    transform: translateY(1rem);
+    transition:
+      opacity 150ms ease,
+      transform 0s linear 150ms;
+  }
+
+  .header[data-menu-open] .menu__item {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 500ms var(--ease-out),
+      transform 600ms var(--ease-out);
+    transition-delay: calc(160ms + 45ms * var(--i) - 3ms * var(--i) * var(--i));
+  }
+
+  .header[data-menu-open]::before {
+    opacity: 1;
+    background: var(--paper);
+    backdrop-filter: none;
+  }
+
+  @media (max-width: 899px) {
+    .nav,
+    .header__cta {
+      display: none;
     }
-    .logo img {
-      display: flex;
-      align-items: center;
-      width: 70px;
+
+    .menu-toggle,
+    .menu {
+      display: block;
     }
-    
-    .nav-menu {
-      position: fixed;
-      top: 50px;
-      right: -100%;
-      flex-direction: column;
-      background-color: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(5px);
-      width: 70%;
-      height: calc(100vh - 70px);
-      padding: 2rem;
-      transition: right 0.3s ease;
-      gap: 2rem;
-      align-items: center;
-    }
-    
-    .nav-menu.active {
-      right: 0;
-    }
-    
-    .nav-toggle.active span:nth-child(1) {
-      transform: rotate(45deg) translate(5px, 5px);
-    }
-    
-    .nav-toggle.active span:nth-child(2) {
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .menu,
+    .header[data-menu-open] .menu {
+      clip-path: none;
       opacity: 0;
+      transition:
+        opacity 200ms ease,
+        visibility 0s linear 200ms;
     }
-    
-    .nav-toggle.active span:nth-child(3) {
-      transform: rotate(-45deg) translate(5px, -5px);
+
+    .header[data-menu-open] .menu {
+      opacity: 1;
+      transition: opacity 200ms ease;
+    }
+
+    .menu__item,
+    .header[data-menu-open] .menu__item {
+      transform: none;
+      transition-delay: 0ms;
     }
   }
-  
-  /* Ajuste para o conteúdo da hero no mobile */
-  @media (max-width: 768px) {
-    :global(.hero .container) {
-      padding-top: 0;
-      margin-top: -20px;
-    }
-    
-    :global(.hero-content) {
-      padding-top: 0;
+
+  @media (prefers-reduced-transparency: reduce) {
+    .header::before {
+      background: var(--paper);
+      backdrop-filter: none;
     }
   }
 </style>
