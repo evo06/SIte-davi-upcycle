@@ -66,7 +66,12 @@ Tudo parte dos *design tokens* em `src/styles/global.css`:
 - **Cor:** papel reciclado (`--paper`) + tinta (`--ink`). A interface é monocromática de propósito,
   para que a cor das obras seja o destaque.
 - **Tipografia:** Bricolage Grotesque (títulos e texto) + Instrument Serif itálico (palavras de
-  destaque), self-hosted via Fontsource. A escala é fluida (`--step-*`, com `clamp()`).
+  destaque), self-hosted via Fontsource. A escala é fluida (`--step-*`, com `clamp()`) e os
+  títulos grandes consideram **largura e altura** da tela (`min(…vw, …vh)`), para não estourar em
+  notebooks, que têm telas largas porém baixas.
+- **Cabe na tela:** o hero ocupa exatamente uma tela (`100svh`) e nenhuma imagem grande passa da
+  altura útil (`--media-max-h`). Testado em 1366×657, 1536×730, 1440×789 e 1920×955 (área útil
+  típica de notebooks e monitores, já sem as barras do navegador).
 - **Grid:** 12 colunas no desktop; o portfólio segue um padrão editorial de 10 posições que se
   reorganiza sozinho quando o filtro esconde itens (`:nth-child(… of :not([hidden]))`).
 

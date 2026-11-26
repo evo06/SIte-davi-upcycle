@@ -85,19 +85,21 @@ import { SITE } from '../data/site';
   .contato__chamada {
     display: grid;
     gap: 2rem var(--col-gap);
-    margin-block: clamp(2.5rem, 1.5rem + 3vw, 4.5rem) clamp(4rem, 2rem + 6vw, 7rem);
+    margin-block: clamp(1.5rem, 1rem + 1.5vw, 2.5rem) clamp(2rem, 1rem + 2.5vw, 3.75rem);
   }
 
+  /* Um degrau acima dos h2: é o fechamento da página, mas não compete
+     com o hero. Também considera a altura da tela. */
   .contato__titulo {
-    font-size: var(--step-4);
-    line-height: 0.92;
-    letter-spacing: -0.045em;
+    font-size: clamp(2.4rem, min(1.2rem + 3.6vw, 9.5vh), 4.75rem);
+    line-height: 0.98;
+    letter-spacing: -0.032em;
     max-width: 10ch;
   }
 
   .contato__acoes {
     display: grid;
-    gap: 1.75rem;
+    gap: 1.25rem;
     align-content: end;
     justify-items: start;
   }
@@ -131,7 +133,7 @@ import { SITE } from '../data/site';
     display: grid;
     align-content: start;
     gap: 0.35rem;
-    padding-block: 1.5rem;
+    padding-block: 1.25rem;
     padding-right: 1.5rem;
     border-bottom: 1px solid var(--line);
   }

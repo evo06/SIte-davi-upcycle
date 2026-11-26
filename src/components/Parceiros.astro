@@ -8,10 +8,10 @@ import shell from '../assets/parceiros/shell.webp';
 
 // Cada marca ligada à obra que fez com o Davi: mostra prova, não só logo.
 const parceiros = [
-  { nome: 'TV Globo', logo: globo, projetos: ['Escultura Onda'], altura: 72 },
-  { nome: 'Shell', logo: shell, projetos: ['Escultura com leques'], altura: 80 },
-  { nome: 'Corona', logo: corona, projetos: ['Planeta Pet'], altura: 66 }, // arquivo original tem só 135px
-  { nome: 'Sesc', logo: sesc, projetos: ['Banco Sol', 'Peixe'], altura: 60 },
+  { nome: 'TV Globo', logo: globo, projetos: ['Escultura Onda'], altura: 58 },
+  { nome: 'Shell', logo: shell, projetos: ['Escultura com leques'], altura: 64 },
+  { nome: 'Corona', logo: corona, projetos: ['Planeta Pet'], altura: 54 },
+  { nome: 'Sesc', logo: sesc, projetos: ['Banco Sol', 'Peixe'], altura: 48 },
 ];
 ---
 
@@ -80,8 +80,8 @@ const parceiros = [
   .marca {
     display: grid;
     grid-template-rows: 1fr auto;
-    gap: 1.5rem;
-    padding: clamp(1.25rem, 0.8rem + 1.5vw, 2rem);
+    gap: 1rem;
+    padding: clamp(1rem, 0.6rem + 1.2vw, 1.5rem);
     border-right: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
   }
@@ -89,7 +89,7 @@ const parceiros = [
   .marca__logo {
     display: grid;
     place-items: center;
-    min-height: clamp(7rem, 5rem + 6vw, 11rem);
+    min-height: clamp(5rem, 3.5rem + 4vw, 8rem);
   }
 
   /* Logos em tons de cinza e fundidos ao papel (multiply some com o branco):

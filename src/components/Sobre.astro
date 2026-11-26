@@ -22,10 +22,6 @@ const valores = [
       <p class="label"><span class="label__index">(02)</span>Sobre</p>
     </div>
 
-    <h2 class="sobre__citacao" id="sobre-titulo">
-      “Nada está perdido. Com criatividade, <em class="serif">tudo se transforma.</em>”
-    </h2>
-
     <div class="sobre__grid">
       <figure class="sobre__figura">
         <div class="sobre__media reveal">
@@ -35,7 +31,7 @@ const valores = [
             fallbackFormat="webp"
             width={1400}
             widths={[480, 720, 1000, 1400]}
-            sizes="(min-width: 1360px) 540px, (min-width: 900px) 40vw, 92vw"
+            sizes="(min-width: 1360px) 520px, (min-width: 900px) 38vw, 92vw"
             alt="Davi Rezende no alto de uma escada, ao lado de uma escultura gigante feita de garrafas PET azuis e verdes."
             loading="lazy"
             decoding="async"
@@ -45,6 +41,9 @@ const valores = [
       </figure>
 
       <div class="sobre__texto">
+        <h2 class="sobre__citacao" id="sobre-titulo">
+          “Nada está perdido. Com criatividade, <em class="serif">tudo se transforma.</em>”
+        </h2>
         <h3 class="sobre__subtitulo">Transformando o comum em extraordinário</h3>
         <p>
           Especialista em upcycling, dedicado a transformar materiais descartados em peças funcionais e
@@ -88,7 +87,10 @@ const valores = [
     --line: var(--line-on-ink);
     --ink-soft: var(--on-ink-soft);
 
-    padding-block: var(--section-space);
+    /* Respiro superior proporcional à altura da tela: o bloco principal
+       (retrato + citação + números) cabe inteiro numa tela de notebook. */
+    padding-top: clamp(2.5rem, 6vh, 4.5rem);
+    padding-bottom: var(--section-space);
     background: var(--ink);
     color: var(--on-ink);
   }
@@ -103,16 +105,16 @@ const valores = [
     border-top: 1px solid var(--line);
   }
 
+  /* Um pouco menor que os outros h2: divide a coluna com texto e números. */
   .sobre__citacao {
     max-width: 17ch;
-    margin-block: clamp(2.5rem, 1.5rem + 3vw, 4.5rem) clamp(4rem, 2rem + 6vw, 8rem);
-    font-size: var(--step-3);
-    line-height: 1;
-    letter-spacing: -0.035em;
+    font-size: clamp(1.9rem, min(1.1rem + 2.4vw, 6.5vh), 3.4rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
   }
 
   /* Aspa "pendurada" na margem, como em revistas: o texto alinha pela letra,
-     não pela pontuação. Só onde a margem lateral comporta a aspa. */
+     não pela pontuação. Só onde há espaço lateral para a aspa. */
   @media (min-width: 900px) {
     .sobre__citacao {
       text-indent: -0.38em;
@@ -121,13 +123,22 @@ const valores = [
 
   .sobre__grid {
     display: grid;
-    gap: clamp(2.5rem, 1.5rem + 4vw, 5rem) var(--col-gap);
+    gap: clamp(2rem, 1rem + 3vw, 3.5rem) var(--col-gap);
+    margin-top: 1rem;
   }
 
   .sobre__media {
+    position: relative;
     overflow: hidden;
     aspect-ratio: 4 / 5;
+    /* tela − header − respiro/rótulo/legenda da seção */
+    max-height: calc(100vh - var(--header-h) - 9rem);
     background: #2a2a27;
+  }
+
+  .sobre__media :global(picture) {
+    position: absolute;
+    inset: 0;
   }
 
   .sobre__media :global(img) {
@@ -138,32 +149,33 @@ const valores = [
   }
 
   .sobre__legenda {
-    padding-top: 0.85rem;
+    padding-top: 0.75rem;
     font-size: var(--step--1);
     color: var(--ink-soft);
   }
 
   .sobre__texto {
     display: grid;
-    align-content: start;
-    gap: 1.25rem;
+    align-content: center;
+    gap: 0.85rem;
     max-width: 38rem;
   }
 
   .sobre__subtitulo {
-    font-size: var(--step-2);
-    letter-spacing: -0.03em;
-    margin-bottom: 0.5rem;
+    font-size: var(--step-1);
+    letter-spacing: -0.015em;
+    margin-top: 0.35rem;
   }
 
   .sobre__texto p {
     color: var(--ink-soft);
     max-width: 60ch;
+    line-height: 1.5;
   }
 
   .numeros {
     display: grid;
-    margin-top: 1.5rem;
+    margin-top: 0.5rem;
     border-top: 1px solid var(--line);
   }
 
@@ -174,16 +186,16 @@ const valores = [
        mesmo quando os rótulos têm alturas diferentes. */
     flex-direction: column-reverse;
     justify-content: flex-end;
-    gap: 0.5rem;
-    padding-block: 1.25rem;
+    gap: 0.35rem;
+    padding-block: 0.8rem 0;
     border-bottom: 1px solid var(--line);
   }
 
   .numero__valor {
-    font-size: clamp(2.25rem, 1.6rem + 2vw, 3.4rem);
+    font-size: clamp(1.75rem, 1.2rem + 1.5vw, 2.6rem);
     white-space: nowrap;
     line-height: 0.95;
-    letter-spacing: -0.04em;
+    letter-spacing: -0.035em;
     font-variant-numeric: tabular-nums;
   }
 
@@ -195,14 +207,14 @@ const valores = [
   .valores {
     display: grid;
     gap: 0 var(--col-gap);
-    margin-top: clamp(4rem, 2rem + 6vw, 8rem);
+    margin-top: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
   }
 
   .valor {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
-    gap: 0.5rem 1.25rem;
-    padding-block: 1.5rem;
+    gap: 0.4rem 1.25rem;
+    padding-block: 1.25rem;
     border-top: 1px solid var(--line);
   }
 
@@ -238,7 +250,7 @@ const valores = [
   @media (min-width: 900px) {
     .sobre__grid {
       grid-template-columns: repeat(12, minmax(0, 1fr));
-      align-items: start;
+      align-items: center;
     }
 
     .sobre__figura {
@@ -247,7 +259,6 @@ const valores = [
 
     .sobre__texto {
       grid-column: 7 / span 6;
-      padding-top: clamp(0rem, 8vw, 8rem);
     }
 
     .valores {

@@ -49,7 +49,7 @@ const ano = new Date().getFullYear();
 
 <style>
   .footer {
-    padding-top: clamp(4rem, 2rem + 6vw, 7rem);
+    padding-top: clamp(3rem, 1.5rem + 4vw, 5rem);
     padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
     background: var(--ink);
     color: var(--on-ink);
@@ -104,7 +104,7 @@ const ano = new Date().getFullYear();
 
   /* O nome ocupa a largura toda: assinatura de catálogo. */
   .footer__assinatura {
-    margin-top: clamp(3rem, 2rem + 5vw, 6rem);
+    margin-top: clamp(2rem, 1rem + 4vw, 4.5rem);
     /* Tamanho derivado da largura útil: a palavra mede ~5,1× o corpo da
        fonte, então largura / 5,15 preenche a linha sem estourar. */
     font-size: min(calc((100vw - 2 * var(--gutter)) / 5.15), calc(var(--max-width) / 5.15));

@@ -18,38 +18,44 @@ const [desktopAvif, desktopWebp, mobileAvif, mobileWebp, fallback] = await Promi
   getImage({ src: fotoHorizontal, format: 'jpg', width: 1200 }),
 ]);
 
-const sizesDesktop = '(min-width: 1360px) 870px, 64vw';
+// Desktop: a foto ocupa a metade direita; tablet: largura total.
+const sizesDesktop = '(min-width: 1360px) 680px, (min-width: 1024px) 50vw, 100vw';
 ---
 
 <section class="hero" id="topo" aria-labelledby="hero-titulo">
   <div class="container hero__grid">
-    <p class="hero__eyebrow label">
-      <span class="hero__eyebrow-nome">{SITE.nome}</span>
-      <span class="hero__eyebrow-sep" aria-hidden="true"></span>
-      <span>Arte sustentável &amp; upcycling</span>
-    </p>
-
-    <h1 class="hero__title" id="hero-titulo">
-      <span class="hero__line"><span style="--d:100ms">Transformando</span></span>
-      <span class="hero__line"><span style="--d:190ms">o <em class="serif">descartado</em> em arte.</span></span>
-    </h1>
-
-    <div class="hero__aside hero__fade">
-      <p class="hero__lead">
-        Esculturas, mobiliário e instalações que unem sustentabilidade e design exclusivo, criados a partir do
-        que seria jogado fora.
+    <div class="hero__texto">
+      <p class="hero__eyebrow label">
+        <span class="hero__eyebrow-nome">{SITE.nome}</span>
+        <span class="hero__eyebrow-sep" aria-hidden="true"></span>
+        <span>Arte sustentável &amp; upcycling</span>
       </p>
-      <div class="hero__actions">
-        <a class="btn" href="#trabalhos">
-          Ver trabalhos
-          <Icon name="arrow-s" class="btn__icon btn__icon--s" />
-        </a>
-        <a class="btn btn--ghost" href={SITE.whatsapp} target="_blank" rel="noopener noreferrer">
-          Fale comigo
-          <Icon name="arrow-ne" class="btn__icon btn__icon--ne" />
-        </a>
+
+      <!-- Três linhas fixas: cada uma é uma "janela" da animação de entrada,
+           e a quebra fica igual em qualquer tela (sem palavra órfã). -->
+      <h1 class="hero__title" id="hero-titulo">
+        <span class="hero__line"><span style="--d:100ms">Transformando</span></span>
+        <span class="hero__line"><span style="--d:180ms">o <em class="serif">descartado</em></span></span>
+        <span class="hero__line"><span style="--d:245ms">em arte.</span></span>
+      </h1>
+
+      <div class="hero__aside hero__fade">
+        <p class="hero__lead">
+          Esculturas, mobiliário e instalações que unem sustentabilidade e design exclusivo, criados a partir do
+          que seria jogado fora.
+        </p>
+        <div class="hero__actions">
+          <a class="btn" href="#trabalhos">
+            Ver trabalhos
+            <Icon name="arrow-s" class="btn__icon btn__icon--s" />
+          </a>
+          <a class="btn btn--ghost" href={SITE.whatsapp} target="_blank" rel="noopener noreferrer">
+            Fale comigo
+            <Icon name="arrow-ne" class="btn__icon btn__icon--ne" />
+          </a>
+        </div>
+        <p class="hero__place">Rio de Janeiro, Brasil</p>
       </div>
-      <p class="hero__place">Rio de Janeiro, Brasil</p>
     </div>
 
     <figure class="hero__figure">
@@ -79,14 +85,29 @@ const sizesDesktop = '(min-width: 1360px) 870px, 64vw';
 
 <style>
   .hero {
-    padding-top: calc(var(--header-h) + clamp(2.5rem, 1rem + 5vw, 5.5rem));
-    padding-bottom: var(--section-space);
+    padding-top: calc(var(--header-h) + clamp(1rem, 4vh, 2.5rem));
+    padding-bottom: clamp(1.5rem, 5vh, 3rem);
   }
 
   .hero__grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 2rem var(--col-gap);
+    gap: 1.5rem var(--col-gap);
+  }
+
+  /* Mobile/tablet: o wrapper "some" do layout e os filhos entram direto no
+     grid, para a obra aparecer entre o título e o texto (ordem visual; a
+     figura não tem itens focáveis, então a navegação por teclado não muda). */
+  .hero__texto {
+    display: contents;
+  }
+
+  .hero__figure {
+    order: 1;
+  }
+
+  .hero__aside {
+    order: 2;
   }
 
   .hero__eyebrow {
@@ -102,18 +123,18 @@ const sizesDesktop = '(min-width: 1360px) 870px, 64vw';
     opacity: 0.6;
   }
 
-  /* Tipografia monumental: entrelinha curta e tracking negativo em
-     tamanhos grandes (o espaçamento padrão fica "frouxo" quando a letra cresce). */
+  /* Título: entrelinha curta e tracking negativo moderado (o espaçamento
+     padrão fica "frouxo" em tamanhos grandes). O tamanho vem de --step-4,
+     que considera largura E altura da tela. */
   .hero__title {
     font-size: var(--step-4);
-    line-height: 0.92;
-    letter-spacing: -0.045em;
+    line-height: 0.98;
+    letter-spacing: -0.032em;
     font-weight: 500;
-    margin-top: -0.5rem;
   }
 
   .hero__title .serif {
-    letter-spacing: -0.02em;
+    letter-spacing: -0.015em;
   }
 
   /* Cada linha é uma "janela": o texto sobe de dentro dela.
@@ -121,8 +142,8 @@ const sizesDesktop = '(min-width: 1360px) 870px, 64vw';
   .hero__line {
     display: block;
     overflow: hidden;
-    padding: 0 0.12em 0.12em 0;
-    margin-bottom: -0.12em;
+    padding: 0 0.12em 0.1em 0;
+    margin-bottom: -0.1em;
   }
 
   .hero__line > span {
@@ -131,14 +152,14 @@ const sizesDesktop = '(min-width: 1360px) 870px, 64vw';
 
   .hero__aside {
     display: grid;
-    gap: 1.75rem;
+    gap: 1.25rem;
     align-content: start;
   }
 
   .hero__lead {
-    max-width: 34ch;
+    max-width: 36ch;
     font-size: var(--step-1);
-    line-height: 1.4;
+    line-height: 1.45;
     color: var(--ink-soft);
   }
 
@@ -154,40 +175,20 @@ const sizesDesktop = '(min-width: 1360px) 870px, 64vw';
     letter-spacing: 0.02em;
   }
 
-  .hero__figure {
-    margin-top: 0.5rem;
-  }
-
-  /* Mobile/tablet: a obra sobe para logo após o título, para aparecer já na
-     primeira tela. Só muda a ordem visual — a figura não tem itens focáveis,
-     então a ordem de navegação por teclado continua coerente. */
-  @media (max-width: 1023px) {
-    .hero__figure {
-      order: 1;
-    }
-
-    .hero__aside {
-      order: 2;
-      margin-top: 1rem;
-    }
-  }
-
-  @media (max-width: 639px) {
-    .hero__eyebrow-nome,
-    .hero__eyebrow-sep {
-      display: none; /* o nome já está no header */
-    }
-
-    .hero__actions .btn {
-      flex: 1 1 auto;
-    }
-  }
-
   .hero__media {
     position: relative;
     overflow: hidden;
     aspect-ratio: 4 / 5;
+    max-height: 62vh;
+    max-height: 62svh;
     background: var(--paper-deep);
+  }
+
+  /* O <picture> ocupa a caixa inteira; sem isso, o height: 100% da imagem
+     não tem referência e sobra uma faixa vazia quando a caixa muda de proporção. */
+  .hero__media picture {
+    position: absolute;
+    inset: 0;
   }
 
   .hero__media img {
@@ -202,7 +203,7 @@ const sizesDesktop = '(min-width: 1360px) 870px, 64vw';
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 0.25rem 1rem;
-    padding-top: 0.85rem;
+    padding-top: 0.75rem;
     font-size: var(--step--1);
     color: var(--ink-soft);
   }
@@ -222,37 +223,67 @@ const sizesDesktop = '(min-width: 1360px) 870px, 64vw';
     }
   }
 
+  @media (max-width: 639px) {
+    .hero__eyebrow-nome,
+    .hero__eyebrow-sep {
+      display: none; /* o nome já está no header */
+    }
+
+    .hero__actions .btn {
+      flex: 1 1 auto;
+    }
+  }
+
+  /* Notebook/desktop: o hero inteiro cabe numa tela (100svh).
+     Texto à esquerda, alinhado embaixo; a obra preenche a altura à direita.
+     svh = altura da tela "pequena" (com barras do navegador visíveis), para
+     nada ficar escondido atrás delas. O teto evita um hero gigante em
+     monitores muito altos. */
   @media (min-width: 1024px) {
+    .hero {
+      display: flex;
+      flex-direction: column;
+      min-height: clamp(36rem, 100vh, 68rem);
+      min-height: clamp(36rem, 100svh, 68rem);
+    }
+
     .hero__grid {
+      flex: 1;
       grid-template-columns: repeat(12, minmax(0, 1fr));
-      row-gap: clamp(2.5rem, 1rem + 3vw, 4.5rem);
+      align-items: stretch;
     }
 
-    .hero__eyebrow,
+    .hero__texto {
+      grid-column: 1 / span 6;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(1.25rem, 3.5vh, 2.25rem);
+      padding-bottom: 2rem; /* alinha a base do texto com a base da foto (acima da legenda) */
+    }
+
     .hero__title {
-      grid-column: 1 / -1;
-    }
-
-    .hero__aside {
-      grid-column: 1 / span 4;
-      align-self: start;
-      position: sticky;
-      top: calc(var(--header-h) + 2rem);
+      margin-top: auto;
     }
 
     .hero__figure {
-      grid-column: 5 / -1;
-      margin-top: 0;
+      grid-column: 7 / -1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
 
     .hero__media {
-      aspect-ratio: 16 / 10;
+      flex: 1;
+      aspect-ratio: auto;
+      max-height: none;
+      min-height: 18rem;
     }
   }
 
   /* ---- Entrada (uma vez, ao carregar) -------------------------------------
-     Hierarquia: o título lidera, a imagem acompanha, os textos de apoio
-     chegam por último e o rótulo só esmaece (decoração não se desloca).
+     Hierarquia: o título lidera (linhas em sequência curta e desigual:
+     0 / 80 / 65ms), a imagem acompanha, os textos de apoio chegam por último
+     e o rótulo só esmaece (decoração não se desloca).
      `both` mantém o estado inicial durante o delay: nada "pisca". */
   @media (prefers-reduced-motion: no-preference) {
     .hero__eyebrow {
@@ -306,13 +337,13 @@ const sizesDesktop = '(min-width: 1360px) 870px, 64vw';
 
   @keyframes hero-unclip {
     from {
-      clip-path: inset(10% 6% 0 6%);
+      clip-path: inset(8% 5% 0 5%);
     }
   }
 
   @keyframes hero-settle {
     from {
-      transform: scale(1.12);
+      transform: scale(1.1);
     }
   }
 </style>

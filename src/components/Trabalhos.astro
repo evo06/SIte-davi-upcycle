@@ -30,7 +30,7 @@ const obras = await Promise.all(
 
 /* `sizes` diz ao navegador a largura que cada card ocupa no grid editorial
    (ver CSS abaixo), para ele baixar só a versão de imagem necessária. */
-const sizes = '(min-width: 1360px) 560px, (min-width: 1024px) 42vw, (min-width: 640px) 46vw, 92vw';
+const sizes = '(min-width: 1360px) 560px, (min-width: 1024px) 40vw, (min-width: 640px) 46vw, 92vw';
 ---
 
 <section class="trabalhos" id="trabalhos" aria-labelledby="trabalhos-titulo">
@@ -349,7 +349,7 @@ const sizes = '(min-width: 1360px) 560px, (min-width: 1024px) 42vw, (min-width: 
   /* ---- Grid de obras ---- */
   .obras {
     display: grid;
-    gap: clamp(3rem, 2rem + 4vw, 5rem) var(--col-gap);
+    gap: clamp(2.5rem, 1.5rem + 3vw, 4rem) var(--col-gap);
   }
 
   .obra {
@@ -377,6 +377,7 @@ const sizes = '(min-width: 1360px) 560px, (min-width: 1024px) 42vw, (min-width: 
     position: relative;
     overflow: hidden;
     aspect-ratio: 4 / 5;
+    max-height: var(--media-max-h); /* nunca mais alta que a tela */
     background: var(--paper-deep);
   }
 
@@ -456,27 +457,28 @@ const sizes = '(min-width: 1360px) 560px, (min-width: 1024px) 42vw, (min-width: 
     }
 
     .obra:nth-child(even of :not([hidden])) {
-      margin-top: clamp(3rem, 10vw, 6rem);
+      margin-top: clamp(2rem, 7vw, 4rem);
     }
   }
 
   /* Desktop: grid editorial de 12 colunas, padrão de 10 posições:
-     [grande + menor deslocada] [3 em degraus] [menor + grande] [3 em degraus].
+     [média + menor deslocada] [3 em degraus] [menor + média] [3 em degraus].
+     Cards de 4–5 colunas: cada obra cabe inteira na tela do notebook.
      `:nth-child(… of :not([hidden]))` recalcula o padrão quando o filtro
      esconde itens — sem JavaScript para o layout. */
   @media (min-width: 1024px) {
     .obras {
       grid-template-columns: repeat(12, minmax(0, 1fr));
       align-items: start;
-      row-gap: clamp(4rem, 2rem + 5vw, 8rem);
+      row-gap: clamp(3rem, 1.5rem + 3vw, 5rem);
     }
 
     .obra:nth-child(10n + 1 of :not([hidden])) {
-      grid-column: 1 / span 6;
+      grid-column: 1 / span 5;
     }
     .obra:nth-child(10n + 2 of :not([hidden])) {
-      grid-column: 8 / span 5;
-      margin-top: clamp(6rem, 14vw, 14rem);
+      grid-column: 8 / span 4;
+      margin-top: clamp(3rem, 7vw, 7rem);
     }
     .obra:nth-child(10n + 3 of :not([hidden])),
     .obra:nth-child(10n + 8 of :not([hidden])) {
@@ -485,19 +487,19 @@ const sizes = '(min-width: 1360px) 560px, (min-width: 1024px) 42vw, (min-width: 
     .obra:nth-child(10n + 4 of :not([hidden])),
     .obra:nth-child(10n + 9 of :not([hidden])) {
       grid-column: 5 / span 4;
-      margin-top: clamp(4rem, 8vw, 8rem);
+      margin-top: clamp(2rem, 5vw, 5rem);
     }
     .obra:nth-child(10n + 5 of :not([hidden])),
     .obra:nth-child(10n + 10 of :not([hidden])) {
       grid-column: 9 / span 4;
-      margin-top: clamp(2rem, 4vw, 4rem);
+      margin-top: clamp(1rem, 2.5vw, 2.5rem);
     }
     .obra:nth-child(10n + 6 of :not([hidden])) {
-      grid-column: 2 / span 5;
-      margin-top: clamp(6rem, 12vw, 12rem);
+      grid-column: 2 / span 4;
+      margin-top: clamp(3rem, 6vw, 6rem);
     }
     .obra:nth-child(10n + 7 of :not([hidden])) {
-      grid-column: 7 / span 6;
+      grid-column: 7 / span 5;
     }
   }
 
@@ -508,8 +510,8 @@ const sizes = '(min-width: 1360px) 560px, (min-width: 1024px) 42vw, (min-width: 
     align-items: center;
     justify-content: space-between;
     gap: 1.5rem 2rem;
-    margin-top: clamp(4rem, 2rem + 6vw, 8rem);
-    padding-top: 2rem;
+    margin-top: clamp(3rem, 1.5rem + 4vw, 5.5rem);
+    padding-top: 1.5rem;
     border-top: 1px solid var(--line);
   }
 
