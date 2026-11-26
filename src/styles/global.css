@@ -1,0 +1,393 @@
+/* =========================================================================
+   Davi Rezende — sistema visual
+   -------------------------------------------------------------------------
+   Direção: catálogo de arte editorial. Interface monocromática (papel
+   reciclado + tinta) para que a cor das obras seja o protagonista.
+   ========================================================================= */
+
+:root {
+  /* ---- Cor ------------------------------------------------------------- */
+  --paper: #f2f0ea;            /* fundo: papel reciclado, quente */
+  --paper-deep: #e7e4dc;       /* placeholders de imagem / superfícies */
+  --ink: #151513;              /* texto e superfícies escuras */
+  --ink-soft: #5c5a54;         /* texto secundário — 6,3:1 sobre --paper */
+  --line: rgb(21 21 19 / 0.14);
+
+  --on-ink: #f2f0ea;
+  --on-ink-soft: #a3a097;      /* texto secundário em fundo escuro — 7,2:1 */
+  --line-on-ink: rgb(242 240 234 / 0.16);
+
+  --whatsapp: #25d366;
+
+  /* ---- Tipografia ------------------------------------------------------ */
+  --font-sans: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, -apple-system,
+    'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Instrument Serif', ui-serif, Georgia, 'Times New Roman', serif;
+
+  /* Escala fluida: cresce com a tela sem saltos entre breakpoints.
+     Os títulos grandes consideram largura E altura — min(…vw, …vh) — para
+     não estourar em notebooks (telas largas, porém baixas). Teto moderado,
+     como recomendam as skills de Emil Kowalski: clamp(2rem, 5vw, 4rem).
+     (vh e não svh aqui: variável CSS não tem fallback se o navegador não
+     entender a unidade.) */
+  --step--1: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);   /* rótulos */
+  --step-0: clamp(1rem, 0.97rem + 0.12vw, 1.0625rem);    /* corpo */
+  --step-1: clamp(1.1rem, 1.02rem + 0.3vw, 1.3rem);      /* lead / h3 */
+  --step-2: clamp(1.45rem, 1.2rem + 0.9vw, 2rem);
+  --step-3: clamp(2rem, min(1.2rem + 2.8vw, 7.5vh), 3.75rem);   /* h2 */
+  --step-4: clamp(2.6rem, min(1rem + 5vw, 11vh), 6rem);         /* h1 */
+
+  /* ---- Espaço e grid --------------------------------------------------- */
+  --gutter: clamp(1rem, 0.4rem + 2.6vw, 2.5rem);
+  --col-gap: clamp(1rem, 0.5rem + 1.8vw, 2.5rem);
+  --section-space: clamp(4rem, min(2rem + 5vw, 13vh), 7.5rem);
+  --max-width: 1360px;
+  --header-h: 4rem;
+  /* Altura máxima de uma imagem grande: cabe na tela junto com o header e a
+     legenda. Sem ela, um card 4:5 largo fica mais alto que a tela do notebook. */
+  --media-max-h: calc(100vh - var(--header-h) - 7rem);
+
+  /* ---- Movimento --------------------------------------------------------
+     Curvas fortes e customizadas (as nativas do CSS são fracas demais).
+     Regra: entrar/sair = ease-out; mover algo já na tela = ease-in-out;
+     nunca ease-in em interface (atrasa justamente o início, que é
+     quando a pessoa está prestando atenção). */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --dur-press: 160ms;   /* feedback de toque/clique */
+  --dur-hover: 200ms;   /* cor, opacidade */
+  --dur-ui: 300ms;      /* diálogos, toasts */
+  --dur-reveal: 1000ms; /* revelações de marketing (acontecem 1 vez) */
+
+  color-scheme: light;
+}
+
+/* ---- Reset enxuto -------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Reserva o espaço da barra de rolagem: travar o scroll (menu, lightbox)
+     não faz o layout "pular" para o lado. */
+  scrollbar-gutter: stable;
+}
+
+/* Rolagem suave só para quem não pediu movimento reduzido. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  font-optical-sizing: auto;
+  line-height: 1.55;
+  color: var(--ink);
+  background-color: var(--paper);
+  /* Grão sutil de papel: textura tátil sem custo de rede (SVG inline). */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.08 0 0 0 0 0.08 0 0 0 0 0.07 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img,
+picture,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 500;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Âncoras não ficam escondidas atrás do header fixo. Seções já têm o
+   próprio respiro interno, então param exatamente abaixo do header. */
+[id] {
+  scroll-margin-top: calc(var(--header-h) + 1rem);
+}
+
+section[id] {
+  scroll-margin-top: var(--header-h);
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* Foco visível só para teclado, com contraste garantido em qualquer fundo. */
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Controles: resposta imediata ao toque e sem o "flash" azul do mobile. */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* ---- Utilitários --------------------------------------------------------- */
+.container {
+  width: min(100% - 2 * var(--gutter), var(--max-width));
+  margin-inline: auto;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 1000;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 500;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* Rótulo editorial: "(01) Trabalhos" */
+.label {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.6em;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.label__index {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.6;
+}
+
+/* Palavra de destaque em itálico serifado. */
+.serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* ---- Botões --------------------------------------------------------------
+   Transições com propriedades explícitas (nunca `transition: all`):
+   evita animar coisas sem querer e é mais barato para o navegador. */
+.btn {
+  --btn-bg: var(--ink);
+  --btn-fg: var(--paper);
+  --btn-border: var(--ink);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65em;
+  min-height: 3.25rem;
+  padding: 0 1.6rem;
+  border: 1px solid var(--btn-border);
+  border-radius: 999px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background-color var(--dur-hover) ease,
+    color var(--dur-hover) ease,
+    border-color var(--dur-hover) ease,
+    transform var(--dur-press) var(--ease-out);
+}
+
+/* Feedback de pressão: o botão "afunda" levemente. Funciona no toque também. */
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn__icon {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  transition: transform var(--dur-hover) var(--ease-out);
+}
+
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink);
+}
+
+.btn--light {
+  --btn-bg: var(--on-ink);
+  --btn-fg: var(--ink);
+  --btn-border: var(--on-ink);
+}
+
+.btn--sm {
+  min-height: 2.6rem;
+  padding: 0 1.15rem;
+  font-size: 0.9375rem;
+}
+
+/* Hover só em dispositivos com mouse: no toque, o hover "gruda"
+   depois do tap e fica com aparência de bug. */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover {
+    --btn-bg: #34332f;
+    --btn-border: #34332f;
+  }
+
+  .btn--ghost:hover {
+    --btn-bg: var(--ink);
+    --btn-fg: var(--paper);
+    --btn-border: var(--ink);
+  }
+
+  .btn--light:hover {
+    --btn-bg: #ffffff;
+    --btn-border: #ffffff;
+  }
+
+  .btn:hover .btn__icon--ne {
+    transform: translate(2px, -2px);
+  }
+
+  .btn:hover .btn__icon--s {
+    transform: translateY(2px);
+  }
+}
+
+/* Link de texto com sublinhado que "desenha" no hover. */
+.link {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 100% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  padding-bottom: 0.1em;
+  transition: background-size var(--dur-ui) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link:hover {
+    background-size: 0% 1px;
+    background-position: 100% 100%;
+  }
+}
+
+/* ---- Revelação de imagens ------------------------------------------------
+   Usada SÓ nas obras e no retrato — não em toda seção. Acontece uma vez,
+   quando a imagem entra na tela (IntersectionObserver em Layout.astro).
+   O estado escondido só existe com JS ativo E movimento permitido:
+   sem JS ou com movimento reduzido, as imagens simplesmente aparecem. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .reveal {
+    clip-path: inset(100% 0 0 0);
+  }
+
+  html.js .reveal img {
+    transform: scale(1.14);
+  }
+
+  html.js .reveal.is-revealed {
+    clip-path: inset(0 0 0 0);
+    transition: clip-path var(--dur-reveal) var(--ease-in-out);
+  }
+
+  html.js .reveal.is-revealed img {
+    transform: none;
+    transition: transform 1600ms var(--ease-out);
+  }
+}
+
+/* ---- Preferências de acessibilidade ------------------------------------- */
+@media (prefers-contrast: more) {
+  :root {
+    --ink-soft: #3a3935;
+    --line: rgb(21 21 19 / 0.5);
+    --on-ink-soft: #d6d3ca;
+    --line-on-ink: rgb(242 240 234 / 0.5);
+  }
+}
+
+/* Impressão: nada de imagens "por revelar". */
+@media print {
+  .reveal,
+  .reveal img {
+    clip-path: none !important;
+    transform: none !important;
+  }
+}

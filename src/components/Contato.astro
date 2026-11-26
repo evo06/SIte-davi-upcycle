@@ -1,224 +1,176 @@
 ---
+import Icon from './Icon.astro';
+import { SITE } from '../data/site';
 ---
 
-<section id="contato" class="section contato">
+<section class="contato" id="contato" aria-labelledby="contato-titulo" data-tema="escuro">
   <div class="container">
-    <div class="section-header">
-      <h2>Entre em Contato</h2>
-      <div class="divider"></div>
-      <p>Tem um projeto em mente ou quer saber mais? Fale conosco!</p>
+    <div class="contato__topo">
+      <p class="label"><span class="label__index">(04)</span>Contato</p>
     </div>
-    
-    <div class="contato-content">
-      <div class="contato-info">
-        
-        <div class="info-item">
-          <h3>Contato</h3>
-          <p>Email: davi.rez@gmail.com</p>
-          <p>Telefone: (21) 98222-1872</p>
-        </div>
-        
-        <div class="info-item">
-          <h3>Horário</h3>
-          <p>Segunda a Sexta: 9h às 18h</p>
-          <p>Sábado: 10h às 14h (com agendamento)</p>
-        </div>
-        
-        <div class="info-item">
-          <h3>Endereço</h3>
-          <p>Rua Valentim Magalhães, 647</p>
-          <p>Bairro - Vigário Geral</p>
-          <p>Rio de Janeiro, RJ - 21241-330 </p>
-        </div>
-        <div class="social-links">
-          <a href="https://www.instagram.com/davi.rez/" class="social-link" aria-label="Instagram">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-            </svg>
+
+    <div class="contato__chamada">
+      <h2 class="contato__titulo" id="contato-titulo">
+        Tem um projeto <em class="serif">em mente?</em>
+      </h2>
+      <div class="contato__acoes">
+        <p class="contato__intro">
+          Orçamentos, projetos personalizados e propostas de parceria. Conte a sua ideia — a resposta é rápida pelo
+          WhatsApp.
+        </p>
+        <a class="btn btn--light contato__cta" href={SITE.whatsapp} target="_blank" rel="noopener noreferrer">
+          <Icon name="whatsapp" class="btn__icon contato__whats" />
+          Conversar no WhatsApp
+          <Icon name="arrow-ne" class="btn__icon btn__icon--ne" />
+        </a>
+      </div>
+    </div>
+
+    <dl class="contato__info">
+      <div class="info">
+        <dt class="info__rotulo">E-mail</dt>
+        <dd><a class="link" href={`mailto:${SITE.email}`}>{SITE.email}</a></dd>
+      </div>
+      <div class="info">
+        <dt class="info__rotulo">Telefone</dt>
+        <dd><a class="link" href={SITE.telefone.href}>{SITE.telefone.exibicao}</a></dd>
+      </div>
+      <div class="info">
+        <dt class="info__rotulo">Horário</dt>
+        {
+          SITE.horario.map((h) => (
+            <dd>
+              {h.dias}: {h.horas}
+            </dd>
+          ))
+        }
+      </div>
+      <div class="info">
+        <dt class="info__rotulo">Endereço</dt>
+        <dd>
+          <address>
+            {SITE.endereco.rua}<br />
+            {SITE.endereco.bairro} — {SITE.endereco.cidade}<br />
+            {SITE.endereco.cep}
+          </address>
+          <a class="info__mapa link" href={SITE.endereco.mapa} target="_blank" rel="noopener noreferrer">
+            Ver no mapa
           </a>
-          <!-- <a href="#" class="social-link" aria-label="Facebook">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-            </svg>
-          </a> -->
-          <!-- <a href="#" class="social-link" aria-label="Pinterest">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
-              <path d="M21 12c0 4.418 -4.03 8 -9 8a9.863 9.863 0 0 1 -4.255 -.949L3 20l1.395 -3.72C3.512 15.042 3 13.574 3 12c0 -4.418 4.03 -8 9 -8s9 3.582 9 8z"></path>
-            </svg>
-          </a> -->
-        </div>
+        </dd>
       </div>
-      <!-- Formulario -->
-      <div class="contato-form">
-        <form id="formularioContato">
-          <div class="form-group">
-            <label for="nome">Nome</label>
-            <input type="text" id="nome" name="nome" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="telefone">Telefone</label>
-            <input type="tel" id="telefone" name="telefone">
-          </div>
-          
-          <div class="form-group">
-            <label for="assunto">Assunto</label>
-            <select id="assunto" name="assunto">
-              <option value="orcamento">Orçamento</option>
-              <option value="projeto">Projeto Personalizado</option>
-              <option value="parceria">Proposta de Parceria</option>
-              <option value="outro">Outro</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label for="mensagem">Mensagem</label>
-            <textarea id="mensagem" name="mensagem" rows="5" required></textarea>
-          </div>
-          
-          <button type="submit" class="btn">Enviar Mensagem</button>
-        </form>
-      </div>
-    </div>
+    </dl>
   </div>
 </section>
 
-<!-- <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const formulario = document.getElementById('formularioContato');
-    
-    formulario?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      // Aqui você adicionaria a lógica para enviar o formulário
-      // Por exemplo, usando fetch para enviar para um backend
-      
-      // Simulação de envio bem-sucedido
-      alert('Mensagem enviada com sucesso! Entraremos em contato em breve.');
-      formulario.reset();
-    });
-  });
-</script> -->
-
 <style>
   .contato {
-    background-color: white;
+    --line: var(--line-on-ink);
+    --ink-soft: var(--on-ink-soft);
+
+    padding-top: var(--section-space);
+    background: var(--ink);
+    color: var(--on-ink);
   }
-  
-  .contato-content {
+
+  .contato ::selection {
+    background: var(--on-ink);
+    color: var(--ink);
+  }
+
+  .contato__topo {
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .contato__chamada {
     display: grid;
-    grid-template-columns: 1fr 1.5fr;
-    gap: 3rem;
-    margin-top: 3rem;
+    gap: 2rem var(--col-gap);
+    margin-block: clamp(1.5rem, 1rem + 1.5vw, 2.5rem) clamp(2rem, 1rem + 2.5vw, 3.75rem);
   }
-  
-  .contato-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+
+  /* Um degrau acima dos h2: é o fechamento da página, mas não compete
+     com o hero. Também considera a altura da tela. */
+  .contato__titulo {
+    font-size: clamp(2.4rem, min(1.2rem + 3.6vw, 9.5vh), 4.75rem);
+    line-height: 0.98;
+    letter-spacing: -0.032em;
+    max-width: 10ch;
   }
-  
-  .info-item h3 {
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-    position: relative;
-    padding-bottom: 0.5rem;
+
+  .contato__acoes {
+    display: grid;
+    gap: 1.25rem;
+    align-content: end;
+    justify-items: start;
   }
-  
-  .info-item h3::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 30px;
-    height: 2px;
-    background-color: var(--color-primary);
+
+  .contato__intro {
+    max-width: 36ch;
+    font-size: var(--step-1);
+    line-height: 1.4;
+    color: var(--ink-soft);
   }
-  
-  .info-item p {
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
+
+  .contato__cta {
+    min-height: 3.75rem;
+    padding-inline: 1.75rem;
+    font-size: 1.0625rem;
   }
-  
-  .social-links {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
+
+  .contato :global(.contato__whats) {
+    width: 1.15em;
+    height: 1.15em;
+    color: #128c4a; /* verde do WhatsApp escurecido: contraste sobre o botão claro */
   }
-  
-  .social-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--color-primary);
-    color: var(--color-secondary);
-    transition: all 0.3s ease;
+
+  .contato__info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    border-top: 1px solid var(--line);
   }
-  
-  .social-link:hover {
-    transform: translateY(-3px);
-    background-color: #333;
+
+  .info {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    padding-block: 1.25rem;
+    padding-right: 1.5rem;
+    border-bottom: 1px solid var(--line);
   }
-  
-  .contato-form {
-    background-color: #f9f9f9;
-    padding: 2rem;
-    border-radius: 2px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+
+  .info__rotulo {
+    margin-bottom: 0.4rem;
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
   }
-  
-  .form-group {
-    margin-bottom: 1.5rem;
+
+  .info address {
+    font-style: normal;
   }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
+
+  .info__mapa {
+    display: inline-block;
+    margin-top: 0.6rem;
+    font-size: var(--step--1);
   }
-  
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
-    width: 100%;
-    padding: 0.8rem;
-    border: 1px solid #ddd;
-    border-radius: 2px;
-    font-family: var(--font-family);
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-  }
-  
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus {
-    outline: none;
-    border-color: var(--color-primary);
-  }
-  
-  @media (max-width: 992px) {
-    .contato-content {
-      grid-template-columns: 1fr;
+
+  @media (min-width: 1024px) {
+    .contato__chamada {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
     }
-    
-    .contato-form {
-      display: none;
+
+    .contato__titulo {
+      grid-column: 1 / span 8;
     }
-    
-    .contato-info {
-      margin: 0 auto;
-      max-width: 500px;
+
+    .contato__acoes {
+      grid-column: 9 / span 4;
+    }
+
+    .info {
+      border-bottom: 0;
     }
   }
 </style>

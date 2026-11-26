@@ -1,287 +1,693 @@
 ---
-const trabalhos = [
-  {
-    id: 1,
-    titulo: "Poltrona feita com com capô de fusca",
-    categoria: "Mobiliário",
-    imagem: "/images/arts/eujafuiumfusca.webp",
-    descricao: "Nada está perdido, com criatividade tudo se transforma! Poltrona feita com com capô de fusca!"
-  },
-  {
-    id: 2,
-    titulo: "Escultura Onda",
-    categoria: "Escultura",
-    imagem: "/images/arts/ondaderesiduo.webp",
-    descricao: "Escultura Onda - feita com resíduos coletados e separados pela área de gestão ambiental da empresa Tv Globo em praias e atividades externas."
-  },
-  {
-    id: 3,
-    titulo: "Armanda",
-    categoria: "Decoração",
-    imagem: "/images/arts/quadrodemnaeira.webp",
-    descricao: "Quadro desenvolvido apenas com colagens de diferentes tipos de madeiras."
-  },
-  {
-    id: 4,
-    titulo: "Banco Sol",
-    categoria: "Decoração",
-    imagem: "/images/arts/bancodesol.webp",
-    descricao: " Banco Sol brilhando no sambódromo! ✨ Recarregue as energias (do celular e as suas!) e celebre a sustentabilidade. "
-  },
-  {
-    id: 5,
-    titulo: "Escultura com leques e pulseiras",
-    categoria: "Mobiliário",
-    imagem: "/images/arts/concha.png",
-    descricao: "A convite da aborda arte criamos essa escultura com leques e pulseiras de quase 3 metros para a shell."
-  },
-  {
-    id: 6,
-    titulo: "Planeta Pet",
-    categoria: "Decoração",
-    imagem: "/images/arts/IMG_8016.JPG",
-    descricao: "Escultura de 5 metros com mais de 3000 garrafas pet feita para campeonato mundial de surf em Saquarema-Rj"
-  },
-  {
-    id: 7,
-    titulo: "Balanço Orelhão",
-    categoria: "Decoração",
-    imagem: "/images/arts/balancoorelhao.webp",
-    descricao: ""
-  },
+import { Picture, getImage } from 'astro:assets';
+import SectionHeader from './SectionHeader.astro';
+import Icon from './Icon.astro';
+import { TRABALHOS } from '../data/trabalhos';
+import { SITE } from '../data/site';
 
-  {
-    id: 8,
-    titulo: "Escultura Baleia",
-    categoria: "Decoração",
-    imagem: "/images/arts/baleia.webp",
-    descricao: ""
-  },
-  {
-    id: 9,
-    titulo: "Escultura Polvo",
-    categoria: "Decoração",
-    imagem: "/images/arts/peixe2.png",
-    descricao: "O pedido era que utilizássemos plásticos de uso doméstico e o desafio foi justamente compor com elementos pequenos e criar essa mega escultura rica em detalhes, do jeito que sempre quis fazer."
-  }
+const contagem = TRABALHOS.reduce<Record<string, number>>((acc, t) => {
+  acc[t.categoria] = (acc[t.categoria] ?? 0) + 1;
+  return acc;
+}, {});
+const filtros = [
+  { nome: 'Todos', total: TRABALHOS.length },
+  ...Object.entries(contagem)
+    .sort((a, b) => b[1] - a[1])
+    .map(([nome, total]) => ({ nome, total })),
 ];
 
-const categorias = ["Todos", ...new Set(trabalhos.map(item => item.categoria))];
+// Versão ampliada (lightbox): a obra inteira, sem corte, em alta resolução.
+const obras = await Promise.all(
+  TRABALHOS.map(async (t, i) => {
+    // Obs.: nunca ler propriedades da imagem importada (ex.: t.imagem.width).
+    // No Astro, isso marca o arquivo original como "usado" e ele é copiado
+    // inteiro para o build. As dimensões vêm do resultado (`attributes`).
+    // O Astro já descarta larguras maiores que a original.
+    const ampliada = await getImage({ src: t.imagem, format: 'webp', widths: [800, 1280, 1800] });
+    return { ...t, numero: String(i + 1).padStart(2, '0'), ampliada };
+  }),
+);
+
+/* `sizes` diz ao navegador a largura que cada card ocupa no grid editorial
+   (ver CSS abaixo), para ele baixar só a versão de imagem necessária. */
+const sizes = '(min-width: 1360px) 560px, (min-width: 1024px) 40vw, (min-width: 640px) 46vw, 92vw';
 ---
 
-<section id="trabalhos" class="section trabalhos">
+<section class="trabalhos" id="trabalhos" aria-labelledby="trabalhos-titulo">
   <div class="container">
-    <div class="section-header">
-      <h2>Portfólio</h2>
-      <div class="divider"></div>
-      <p>Conheça algumas das criações que transformaram materiais descartados em peças únicas.</p>
-    </div>
-    
-    <div class="filtro-categorias">
-      <ul>
-        {categorias.map((categoria, index) => (
-          <li>
-            <button 
-              class={index === 0 ? "filtro-btn active" : "filtro-btn"} 
-              data-categoria={categoria}
-            >
-              {categoria}
+    <SectionHeader index="01" label="Trabalhos" titleId="trabalhos-titulo">
+      Obras <em class="serif">selecionadas</em>
+      <p slot="intro">
+        Peças únicas que transformaram materiais descartados — de garrafas PET a um capô de Fusca — em arte,
+        mobiliário e instalações.
+      </p>
+      <div slot="aside" class="filtros" role="group" aria-label="Filtrar obras por categoria">
+        {
+          filtros.map((f, i) => (
+            <button class="filtro" type="button" aria-pressed={i === 0 ? 'true' : 'false'} data-filtro={f.nome}>
+              {f.nome}
+              <span class="filtro__total">{f.total}</span>
             </button>
-          </li>
-        ))}
-      </ul>
-    </div>
-    
-    <div class="trabalhos-grid">
-      {trabalhos.map(trabalho => (
-        <div class="trabalho-item" data-categoria={trabalho.categoria}>
-          <div class="trabalho-img">
-            <img src={trabalho.imagem} alt={trabalho.titulo} />
-            <div class="trabalho-overlay">
-              <div class="trabalho-info">
-                <h3>{trabalho.titulo}</h3>
-                <p>{trabalho.descricao}</p>
-                <span class="categoria-tag">{trabalho.categoria}</span>
+          ))
+        }
+      </div>
+    </SectionHeader>
+
+    <ul class="obras" data-obras>
+      {
+        obras.map((obra, i) => (
+          <li class="obra" data-categoria={obra.categoria}>
+            <a
+              class="obra__link"
+              href={obra.ampliada.src}
+              data-index={i}
+              data-titulo={obra.titulo}
+              data-categoria={obra.categoria}
+              data-contexto={obra.contexto ?? ''}
+              data-descricao={obra.descricao ?? ''}
+              data-srcset={obra.ampliada.srcSet.attribute}
+              data-src={obra.ampliada.src}
+              data-largura={obra.ampliada.attributes.width}
+              data-altura={obra.ampliada.attributes.height}
+              data-video={obra.video ?? ''}
+              aria-label={`Ver obra: ${obra.titulo}`}
+            >
+              <div class="obra__media reveal">
+                <Picture
+                  src={obra.imagem}
+                  formats={['avif']}
+                  fallbackFormat="webp"
+                  widths={[400, 640, 900, 1200]}
+                  sizes={sizes}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  style={obra.foco ? `object-position:${obra.foco}` : undefined}
+                />
+                {obra.video && (
+                  <span class="obra__badge">
+                    <Icon name="play" class="obra__badge-icon" />
+                    Vídeo
+                  </span>
+                )}
               </div>
+            </a>
+            <div class="obra__meta">
+              <span class="obra__numero">{obra.numero}</span>
+              <div class="obra__textos">
+                <h3 class="obra__titulo">{obra.titulo}</h3>
+                {obra.contexto && <p class="obra__contexto">{obra.contexto}</p>}
+              </div>
+              <span class="obra__categoria">{obra.categoria}</span>
             </div>
-          </div>
-        </div>
-      ))}
-    </div>
-    
-    <div class="trabalhos-cta">
-      <a href="https://api.whatsapp.com/send?phone=5521982221872&text=oi%2C%20vim%20do%20seu%20site" target="_blank" class="btn">Solicite um Projeto</a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="trabalhos__cta">
+      <p>Peças sob encomenda para marcas, eventos e espaços.</p>
+      <a class="btn" href={SITE.whatsapp} target="_blank" rel="noopener noreferrer">
+        Solicite um projeto
+        <Icon name="arrow-ne" class="btn__icon btn__icon--ne" />
+      </a>
     </div>
   </div>
+
+  <!-- Visualização ampliada. <dialog> nativo = foco preso, Esc fecha
+       e o resto da página fica inerte, sem biblioteca. -->
+  <dialog class="lightbox" aria-labelledby="lightbox-titulo" data-lightbox>
+    <div class="lightbox__bar">
+      <p class="lightbox__contador" aria-live="polite" data-lb-contador></p>
+      <button class="lightbox__fechar" type="button" data-lb-fechar>
+        Fechar <Icon name="close" class="lightbox__icone" />
+      </button>
+    </div>
+
+    <figure class="lightbox__figura">
+      <div class="lightbox__palco" data-lb-palco>
+        <img class="lightbox__img" alt="" data-lb-img />
+        <video class="lightbox__video" playsinline controls muted loop preload="none" hidden data-lb-video></video>
+      </div>
+      <figcaption class="lightbox__legenda">
+        <div>
+          <p class="lightbox__meta" data-lb-meta></p>
+          <h3 class="lightbox__titulo" id="lightbox-titulo" data-lb-titulo></h3>
+        </div>
+        <p class="lightbox__descricao" data-lb-descricao></p>
+        <div class="lightbox__nav">
+          <button class="lightbox__seta" type="button" aria-label="Obra anterior" data-lb-anterior>
+            <Icon name="arrow-left" class="lightbox__icone" />
+          </button>
+          <button class="lightbox__seta" type="button" aria-label="Próxima obra" data-lb-proxima>
+            <Icon name="arrow-right" class="lightbox__icone" />
+          </button>
+        </div>
+      </figcaption>
+    </figure>
+  </dialog>
 </section>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const filtroButtons = document.querySelectorAll('.filtro-btn');
-    const trabalhoItems = document.querySelectorAll('.trabalho-item');
-    
-    filtroButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        // Remove active class from all buttons
-        filtroButtons.forEach(btn => btn.classList.remove('active'));
-        
-        // Add active class to clicked button
-        button.classList.add('active');
-        
-        const categoria = button.getAttribute('data-categoria');
-        
-        // Filter items
-        trabalhoItems.forEach(item => {
-          // Este bloco verifica se o item deve ser mostrado ou escondido
-          if (categoria === 'Todos' || item.getAttribute('data-categoria') === categoria) {
-            // Se o item corresponde à categoria selecionada ou se "Todos" foi selecionado
-            item.style.display = 'block'; // Primeiro torna o item visível
-            setTimeout(() => {
-              item.classList.add('show'); // Depois adiciona a classe que anima a entrada
-            }, 50); // Pequeno atraso para garantir que a animação funcione
-          } else {
-            // Se o item não corresponde à categoria selecionada
-            item.classList.remove('show'); // Remove a classe de animação primeiro
-            setTimeout(() => {
-              item.style.display = 'none'; // Depois esconde o elemento após a animação terminar
-            }, 300); // Atraso correspondente à duração da transição CSS
-          }
-        });
+  const secao = document.querySelector<HTMLElement>('#trabalhos')!;
+  const lista = secao.querySelector<HTMLElement>('[data-obras]')!;
+  const itens = [...lista.querySelectorAll<HTMLLIElement>('.obra')];
+  const botoes = [...secao.querySelectorAll<HTMLButtonElement>('[data-filtro]')];
+  const reduz = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* ---- Filtro ----
+     Troca de filtro é uma ação repetitiva (como trocar de aba): sem
+     coreografia. Só um esmaecer curto para a troca não ser "seca". */
+  botoes.forEach((botao) => {
+    botao.addEventListener('click', () => {
+      const filtro = botao.dataset.filtro!;
+      botoes.forEach((b) => b.setAttribute('aria-pressed', String(b === botao)));
+      itens.forEach((item) => {
+        item.hidden = filtro !== 'Todos' && item.dataset.categoria !== filtro;
       });
-    });
-    
-    // Initialize with all items visible
-    trabalhoItems.forEach(item => {
-      item.classList.add('show');
+      if (!reduz.matches) {
+        lista.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 240, easing: 'ease-out' });
+      }
     });
   });
+
+  /* ---- Lightbox ---- */
+  const dialog = secao.querySelector<HTMLDialogElement>('[data-lightbox]')!;
+  const el = {
+    img: dialog.querySelector<HTMLImageElement>('[data-lb-img]')!,
+    video: dialog.querySelector<HTMLVideoElement>('[data-lb-video]')!,
+    titulo: dialog.querySelector<HTMLElement>('[data-lb-titulo]')!,
+    meta: dialog.querySelector<HTMLElement>('[data-lb-meta]')!,
+    descricao: dialog.querySelector<HTMLElement>('[data-lb-descricao]')!,
+    contador: dialog.querySelector<HTMLElement>('[data-lb-contador]')!,
+    palco: dialog.querySelector<HTMLElement>('[data-lb-palco]')!,
+  };
+
+  let visiveis: HTMLAnchorElement[] = [];
+  let atual = 0;
+  let origem: HTMLElement | null = null;
+
+  const pad = (n: number) => String(n).padStart(2, '0');
+
+  const mostrar = (posicao: number) => {
+    atual = (posicao + visiveis.length) % visiveis.length;
+    const d = visiveis[atual].dataset;
+
+    el.img.srcset = d.srcset!;
+    el.img.sizes = '(min-width: 1024px) 70vw, 100vw';
+    el.img.src = d.src!;
+    el.img.width = Number(d.largura);
+    el.img.height = Number(d.altura);
+    el.img.alt = d.titulo!;
+
+    if (d.video) {
+      el.video.poster = d.src!;
+      el.video.src = d.video;
+      el.video.hidden = false;
+      el.img.hidden = true;
+      el.video.play().catch(() => {});
+    } else {
+      el.video.pause();
+      el.video.removeAttribute('src');
+      el.video.hidden = true;
+      el.img.hidden = false;
+    }
+
+    el.titulo.textContent = d.titulo!;
+    el.meta.textContent = [d.categoria, d.contexto].filter(Boolean).join(' · ');
+    el.descricao.textContent = d.descricao ?? '';
+    el.descricao.hidden = !d.descricao;
+    el.contador.textContent = `${pad(atual + 1)} / ${pad(visiveis.length)}`;
+  };
+
+  const abrir = (link: HTMLAnchorElement) => {
+    visiveis = itens.filter((i) => !i.hidden).map((i) => i.querySelector<HTMLAnchorElement>('.obra__link')!);
+    origem = link;
+    mostrar(visiveis.indexOf(link));
+    dialog.showModal();
+    document.documentElement.style.overflow = 'hidden';
+  };
+
+  const fechar = () => dialog.close();
+
+  dialog.addEventListener('close', () => {
+    el.video.pause();
+    document.documentElement.style.overflow = '';
+    origem?.focus({ preventScroll: true });
+  });
+
+  lista.addEventListener('click', (e) => {
+    const link = (e.target as HTMLElement).closest<HTMLAnchorElement>('.obra__link');
+    // Ctrl/Cmd+clique continua abrindo a imagem em nova aba (comportamento nativo).
+    if (!link || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    e.preventDefault();
+    abrir(link);
+  });
+
+  dialog.querySelector('[data-lb-fechar]')!.addEventListener('click', fechar);
+  dialog.querySelector('[data-lb-anterior]')!.addEventListener('click', () => mostrar(atual - 1));
+  dialog.querySelector('[data-lb-proxima]')!.addEventListener('click', () => mostrar(atual + 1));
+
+  // Clique no fundo (fora da obra e da legenda) fecha.
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog || e.target === el.palco) fechar();
+  });
+
+  // Navegação por teclado — troca instantânea: é uma ação repetida.
+  dialog.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') mostrar(atual + 1);
+    if (e.key === 'ArrowLeft') mostrar(atual - 1);
+  });
+
+  // Swipe horizontal no celular: decide pela distância OU pela velocidade
+  // (um "peteleco" rápido e curto também conta).
+  let inicioX = 0;
+  let inicioY = 0;
+  let inicioT = 0;
+  el.palco.addEventListener(
+    'pointerdown',
+    (e) => {
+      if (e.pointerType === 'mouse') return;
+      inicioX = e.clientX;
+      inicioY = e.clientY;
+      inicioT = performance.now();
+    },
+    { passive: true },
+  );
+  el.palco.addEventListener(
+    'pointerup',
+    (e) => {
+      if (e.pointerType === 'mouse' || !inicioT) return;
+      const dx = e.clientX - inicioX;
+      const dy = e.clientY - inicioY;
+      const velocidade = Math.abs(dx) / (performance.now() - inicioT);
+      inicioT = 0;
+      if (Math.abs(dx) < Math.abs(dy)) return;
+      if (Math.abs(dx) > 60 || velocidade > 0.4) mostrar(dx < 0 ? atual + 1 : atual - 1);
+    },
+    { passive: true },
+  );
 </script>
 
 <style>
   .trabalhos {
-    background-color: white;
+    padding-bottom: var(--section-space);
   }
-  
-  .section-header p {
-    max-width: 600px;
-    margin: 1rem auto 0;
-    font-size: 1.1rem;
-  }
-  
-  .filtro-categorias {
-    margin: 2rem 0 3rem;
-  }
-  
-  .filtro-categorias ul {
+
+  /* ---- Filtros ---- */
+  .filtros {
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
-    gap: 1rem;
-    list-style: none;
+    gap: 0.25rem 1.5rem;
   }
-  
-  .filtro-btn {
-    background: none;
-    border: 1px solid var(--color-primary);
-    padding: 0.5rem 1.5rem;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: var(--font-family);
+
+  .filtro {
+    position: relative;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    min-height: 2.75rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    transition: color var(--dur-hover) ease;
   }
-  
-  .filtro-btn:hover, .filtro-btn.active {
-    background-color: var(--color-primary);
-    color: var(--color-secondary);
+
+  .filtro::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.55rem;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-ui) var(--ease-out);
   }
-  
-  .trabalhos-grid {
+
+  .filtro[aria-pressed='true'] {
+    color: var(--ink);
+  }
+
+  .filtro[aria-pressed='true']::after {
+    transform: none;
+  }
+
+  .filtro__total {
+    font-size: 0.7rem;
+    font-variant-numeric: tabular-nums;
+    transform: translateY(-0.45em);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .filtro:hover {
+      color: var(--ink);
+    }
+  }
+
+  /* ---- Grid de obras ---- */
+  .obras {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
+    gap: clamp(2.5rem, 1.5rem + 3vw, 4rem) var(--col-gap);
   }
-  
-  .trabalho-item {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+
+  .obra {
+    position: relative;
   }
-  
-  .trabalho-item.show {
-    opacity: 1;
-    transform: translateY(0);
+
+  .obra[hidden] {
+    display: none;
   }
-  
-  .trabalho-img {
+
+  .obra__link {
+    display: block;
+    cursor: zoom-in;
+  }
+
+  /* O link cobre o card todo (imagem + legenda), mas só a imagem fica
+     dentro do <a>: assim o título continua sendo um h3 válido. */
+  .obra__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .obra__media {
     position: relative;
     overflow: hidden;
-    border-radius: 2px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    aspect-ratio: 3/4;
+    aspect-ratio: 4 / 5;
+    max-height: var(--media-max-h); /* nunca mais alta que a tela */
+    background: var(--paper-deep);
   }
-  
-  .trabalho-img img {
+
+  .obra__media :global(picture) {
+    display: block;
+    height: 100%;
+    transition: transform 900ms var(--ease-out);
+  }
+
+  .obra__media :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
   }
-  
-  .trabalho-overlay {
+
+  .obra__badge {
     position: absolute;
-    top: 0;
-    left: 0;
+    left: 0.75rem;
+    bottom: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.7rem 0.35rem 0.55rem;
+    border-radius: 999px;
+    background: rgb(21 21 19 / 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--on-ink);
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .obra__media :global(.obra__badge-icon) {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  .obra__meta {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0.9rem;
+    padding-top: 1rem;
+  }
+
+  .obra__numero,
+  .obra__categoria {
+    font-size: var(--step--1);
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .obra__titulo {
+    font-size: var(--step-1);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .obra__contexto {
+    margin-top: 0.2rem;
+    font-size: var(--step--1);
+    color: var(--ink-soft);
+  }
+
+  /* Hover só com mouse: a imagem aproxima de leve (sinaliza que é clicável). */
+  @media (hover: hover) and (pointer: fine) {
+    .obra:hover .obra__media :global(picture) {
+      transform: scale(1.035);
+    }
+  }
+
+  /* Tablet: duas colunas, a segunda deslocada para baixo. */
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .obras {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+
+    .obra:nth-child(even of :not([hidden])) {
+      margin-top: clamp(2rem, 7vw, 4rem);
+    }
+  }
+
+  /* Desktop: grid editorial de 12 colunas, padrão de 10 posições:
+     [média + menor deslocada] [3 em degraus] [menor + média] [3 em degraus].
+     Cards de 4–5 colunas: cada obra cabe inteira na tela do notebook.
+     `:nth-child(… of :not([hidden]))` recalcula o padrão quando o filtro
+     esconde itens — sem JavaScript para o layout. */
+  @media (min-width: 1024px) {
+    .obras {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      align-items: start;
+      row-gap: clamp(3rem, 1.5rem + 3vw, 5rem);
+    }
+
+    .obra:nth-child(10n + 1 of :not([hidden])) {
+      grid-column: 1 / span 5;
+    }
+    .obra:nth-child(10n + 2 of :not([hidden])) {
+      grid-column: 8 / span 4;
+      margin-top: clamp(3rem, 7vw, 7rem);
+    }
+    .obra:nth-child(10n + 3 of :not([hidden])),
+    .obra:nth-child(10n + 8 of :not([hidden])) {
+      grid-column: 1 / span 4;
+    }
+    .obra:nth-child(10n + 4 of :not([hidden])),
+    .obra:nth-child(10n + 9 of :not([hidden])) {
+      grid-column: 5 / span 4;
+      margin-top: clamp(2rem, 5vw, 5rem);
+    }
+    .obra:nth-child(10n + 5 of :not([hidden])),
+    .obra:nth-child(10n + 10 of :not([hidden])) {
+      grid-column: 9 / span 4;
+      margin-top: clamp(1rem, 2.5vw, 2.5rem);
+    }
+    .obra:nth-child(10n + 6 of :not([hidden])) {
+      grid-column: 2 / span 4;
+      margin-top: clamp(3rem, 6vw, 6rem);
+    }
+    .obra:nth-child(10n + 7 of :not([hidden])) {
+      grid-column: 7 / span 5;
+    }
+  }
+
+  /* ---- CTA ---- */
+  .trabalhos__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+    margin-top: clamp(3rem, 1.5rem + 4vw, 5.5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .trabalhos__cta p {
+    font-size: var(--step-2);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    max-width: 22ch;
+  }
+
+  /* ---- Lightbox ----
+     Entrada com @starting-style (sem JS): esmaece e a obra cresce de 96%
+     (nunca de 0 — nada no mundo real surge do nada). Saída mais curta. */
+  .lightbox {
     width: 100%;
+    max-width: none;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    max-height: none;
+    padding: 0;
+    border: 0;
+    background: #0e0e0d; /* opaco: 3% de transparência já deixava a página clara "vazar" */
+    color: var(--on-ink);
+    opacity: 0;
+    transition:
+      opacity 200ms ease,
+      overlay 200ms allow-discrete,
+      display 200ms allow-discrete;
+  }
+
+  .lightbox[open] {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    opacity: 1;
+    transition-duration: var(--dur-ui);
+  }
+
+  .lightbox::backdrop {
+    background: transparent;
+  }
+
+  .lightbox__figura {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    min-height: 0;
+    padding: 0 var(--gutter) max(1.25rem, env(safe-area-inset-bottom));
+    transform: scale(0.96);
+    transition: transform 200ms var(--ease-out);
+  }
+
+  .lightbox[open] .lightbox__figura {
+    transform: none;
+    transition-duration: 400ms;
+  }
+
+  @starting-style {
+    .lightbox[open] {
+      opacity: 0;
+    }
+
+    .lightbox[open] .lightbox__figura {
+      transform: scale(0.96);
+    }
+  }
+
+  .lightbox__bar {
     display: flex;
     align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    justify-content: space-between;
+    padding: 0.75rem var(--gutter);
   }
-  
-  .trabalho-img:hover img {
-    transform: scale(1.05);
+
+  .lightbox__contador {
+    font-size: var(--step--1);
+    font-variant-numeric: tabular-nums;
+    color: var(--on-ink-soft);
   }
-  
-  .trabalho-img:hover .trabalho-overlay {
-    opacity: 1;
+
+  .lightbox__fechar {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
   }
-  
-  .trabalho-info {
-    text-align: center;
-    padding: 2rem;
-    color: white;
+
+  .lightbox :global(.lightbox__icone) {
+    width: 1.25rem;
+    height: 1.25rem;
   }
-  
-  .trabalho-info h3 {
-    font-size: 1.3rem;
-    margin-bottom: 0.5rem;
+
+  .lightbox__palco {
+    display: grid;
+    place-items: center;
+    min-height: 0;
+    touch-action: pan-y;
   }
-  
-  .trabalho-info p {
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
+
+  .lightbox__img,
+  .lightbox__video {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    min-height: 0;
   }
-  
-  .categoria-tag {
-    display: inline-block;
-    padding: 0.3rem 1rem;
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
-    font-size: 0.8rem;
+
+  .lightbox__img[hidden],
+  .lightbox__video[hidden] {
+    display: none;
   }
-  
-  .trabalhos-cta {
-    margin-top: 4rem;
-    text-align: center;
+
+  .lightbox__legenda {
+    display: grid;
+    gap: 0.75rem 2rem;
+    padding-top: 1.25rem;
+    margin-top: 1.25rem;
+    border-top: 1px solid var(--line-on-ink);
   }
-  
-  @media (max-width: 768px) {
-    .trabalhos-grid {
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 1.5rem;
+
+  .lightbox__meta {
+    font-size: var(--step--1);
+    color: var(--on-ink-soft);
+  }
+
+  .lightbox__titulo {
+    font-size: var(--step-2);
+    letter-spacing: -0.03em;
+  }
+
+  .lightbox__descricao {
+    max-width: 60ch;
+    color: var(--on-ink-soft);
+  }
+
+  .lightbox__nav {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .lightbox__seta {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--line-on-ink);
+    border-radius: 50%;
+    transition:
+      background-color var(--dur-hover) ease,
+      color var(--dur-hover) ease,
+      transform var(--dur-press) var(--ease-out);
+  }
+
+  .lightbox__seta:active {
+    transform: scale(0.94);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .lightbox__seta:hover {
+      background: var(--on-ink);
+      color: var(--ink);
+    }
+  }
+
+  @media (min-width: 900px) {
+    .lightbox__legenda {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 6fr) auto;
+      align-items: end;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lightbox__figura,
+    .lightbox[open] .lightbox__figura {
+      transform: none;
     }
   }
 </style>

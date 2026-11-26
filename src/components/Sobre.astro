@@ -1,175 +1,268 @@
 ---
+import { Picture } from 'astro:assets';
+import retrato from '../assets/sobre/davi-em-processo.webp';
+
+// Números tirados do próprio conteúdo do site (sem inventar métricas).
+const numeros = [
+  { valor: '10+', rotulo: 'anos de experiência em upcycling' },
+  { valor: '3.000+', rotulo: 'garrafas PET em uma única obra' },
+  { valor: '5 m', rotulo: 'de altura no Planeta Pet' },
+];
+
+const valores = [
+  { titulo: 'Sustentabilidade', texto: 'Comprometimento com práticas sustentáveis em todo o processo criativo.' },
+  { titulo: 'Originalidade', texto: 'Cada peça é única, refletindo a visão artística e o seu propósito.' },
+  { titulo: 'Qualidade', texto: 'Atenção meticulosa aos detalhes para garantir durabilidade e excelência.' },
+];
 ---
 
-<section id="sobre" class="section sobre">
+<section class="sobre" id="sobre" aria-labelledby="sobre-titulo" data-tema="escuro">
   <div class="container">
-    <div class="section-header">
-      <h2>Quem Sou Eu?</h2>
-      <div class="divider"></div>
+    <div class="sobre__topo">
+      <p class="label"><span class="label__index">(02)</span>Sobre</p>
     </div>
-    
-    <div class="sobre-content">
-      <div class="sobre-image">
-        <img src="/images/hero01.webp" alt="Designer de Upcycle" />
-      </div>
-      
-      <div class="sobre-text">
-        <h3>Transformando o Comum em Extraordinário</h3>
-        <p>
-          Especialista em upcycling, dedicado a transformar materiais descartados em peças funcionais e esteticamente impressionantes. Visando sempre a redefinição do conceito de "lixo" através de criatividade e inovação.
-        </p>
-        <p>
-          São mais de 10 anos de experiência, combinando técnicas artesanais tradicionais com abordagens contemporâneas para criar designs únicos que contam histórias e inspiram mudanças.
-        </p>
-        
-        <div class="valores">
-          <div class="valor">
-            <h4>Sustentabilidade</h4>
-            <p>Comprometimento com práticas sustentáveis em todo o processo criativo.</p>
-          </div>
-          <div class="valor">
-            <h4>Originalidade</h4>
-            <p>Cada peça é única, refletindo a visão artística e seu propósito.</p>
-          </div>
-          <div class="valor">
-            <h4>Qualidade</h4>
-            <p>Atenção meticulosa aos detalhes para garantir durabilidade e excelência.</p>
-          </div>
+
+    <div class="sobre__grid">
+      <figure class="sobre__figura">
+        <div class="sobre__media reveal">
+          <Picture
+            src={retrato}
+            formats={['avif']}
+            fallbackFormat="webp"
+            width={1400}
+            widths={[480, 720, 1000, 1400]}
+            sizes="(min-width: 1360px) 520px, (min-width: 900px) 38vw, 92vw"
+            alt="Davi Rezende no alto de uma escada, ao lado de uma escultura gigante feita de garrafas PET azuis e verdes."
+            loading="lazy"
+            decoding="async"
+          />
         </div>
+        <figcaption class="sobre__legenda">Davi Rezende em processo de montagem</figcaption>
+      </figure>
+
+      <div class="sobre__texto">
+        <h2 class="sobre__citacao" id="sobre-titulo">
+          “Nada está perdido. Com criatividade, <em class="serif">tudo se transforma.</em>”
+        </h2>
+        <h3 class="sobre__subtitulo">Transformando o comum em extraordinário</h3>
+        <p>
+          Especialista em upcycling, dedicado a transformar materiais descartados em peças funcionais e
+          esteticamente impressionantes — sempre redefinindo o conceito de “lixo” através da criatividade e da
+          inovação.
+        </p>
+        <p>
+          São mais de 10 anos de experiência, combinando técnicas artesanais tradicionais com abordagens
+          contemporâneas para criar designs únicos que contam histórias e inspiram mudanças.
+        </p>
+
+        <dl class="numeros">
+          {
+            numeros.map((n) => (
+              <div class="numero">
+                <dt class="numero__rotulo">{n.rotulo}</dt>
+                <dd class="numero__valor">{n.valor}</dd>
+              </div>
+            ))
+          }
+        </dl>
       </div>
     </div>
+
+    <ol class="valores">
+      {
+        valores.map((v, i) => (
+          <li class="valor">
+            <span class="valor__numero">{String(i + 1).padStart(2, '0')}</span>
+            <h4 class="valor__titulo">{v.titulo}</h4>
+            <p class="valor__texto">{v.texto}</p>
+          </li>
+        ))
+      }
+    </ol>
   </div>
 </section>
 
 <style>
   .sobre {
-    background-color: #f9f9f9;
+    --line: var(--line-on-ink);
+    --ink-soft: var(--on-ink-soft);
+
+    /* Respiro superior proporcional à altura da tela: o bloco principal
+       (retrato + citação + números) cabe inteiro numa tela de notebook. */
+    padding-top: clamp(2.5rem, 6vh, 4.5rem);
+    padding-bottom: var(--section-space);
+    background: var(--ink);
+    color: var(--on-ink);
   }
-  
-  .section-header {
-    text-align: center;
-    margin-bottom: 3rem;
+
+  .sobre ::selection {
+    background: var(--on-ink);
+    color: var(--ink);
   }
-  
-  .section-header h2 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
+
+  .sobre__topo {
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--line);
   }
-  
-  .divider {
-    height: 3px;
-    width: 60px;
-    background-color: var(--color-primary);
-    margin: 0 auto;
+
+  /* Um pouco menor que os outros h2: divide a coluna com texto e números. */
+  .sobre__citacao {
+    max-width: 17ch;
+    font-size: clamp(1.9rem, min(1.1rem + 2.4vw, 6.5vh), 3.4rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
   }
-  
-  .sobre-content {
+
+  /* Aspa "pendurada" na margem, como em revistas: o texto alinha pela letra,
+     não pela pontuação. Só onde há espaço lateral para a aspa. */
+  @media (min-width: 900px) {
+    .sobre__citacao {
+      text-indent: -0.38em;
+    }
+  }
+
+  .sobre__grid {
     display: grid;
-    grid-template-columns: 1fr 1.5fr;
-    gap: 3rem;
-    align-items: center;
+    gap: clamp(2rem, 1rem + 3vw, 3.5rem) var(--col-gap);
+    margin-top: 1rem;
   }
-  
-  .sobre-image {
+
+  .sobre__media {
     position: relative;
     overflow: hidden;
-    border-radius: 8px;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    aspect-ratio: 4 / 5;
+    /* tela − header − respiro/rótulo/legenda da seção */
+    max-height: calc(100vh - var(--header-h) - 9rem);
+    background: #2a2a27;
   }
-  
-  .sobre-image img {
-    display: block;
-    width: 100%;
-    height: auto;
-    transition: transform 0.5s ease;
-  }
-  
-  .sobre-image:hover img {
-    transform: scale(1.03);
-  }
-  
-  .sobre-text h3 {
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-    position: relative;
-    display: inline-block;
-  }
-  
-  .sobre-text h3::after {
-    content: '';
+
+  .sobre__media :global(picture) {
     position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 40px;
-    height: 2px;
-    background-color: var(--color-primary);
+    inset: 0;
   }
-  
-  .sobre-text p {
-    margin-bottom: 1.5rem;
-    font-size: 1.05rem;
+
+  .sobre__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 60% 30%;
   }
-  
+
+  .sobre__legenda {
+    padding-top: 0.75rem;
+    font-size: var(--step--1);
+    color: var(--ink-soft);
+  }
+
+  .sobre__texto {
+    display: grid;
+    align-content: center;
+    gap: 0.85rem;
+    max-width: 38rem;
+  }
+
+  .sobre__subtitulo {
+    font-size: var(--step-1);
+    letter-spacing: -0.015em;
+    margin-top: 0.35rem;
+  }
+
+  .sobre__texto p {
+    color: var(--ink-soft);
+    max-width: 60ch;
+    line-height: 1.5;
+  }
+
+  .numeros {
+    display: grid;
+    margin-top: 0.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .numero {
+    display: flex;
+    /* Valor em cima visualmente; a ordem semântica continua dt → dd.
+       flex-end (no eixo invertido = topo) alinha os valores entre colunas
+       mesmo quando os rótulos têm alturas diferentes. */
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 0.35rem;
+    padding-block: 0.8rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .numero__valor {
+    font-size: clamp(1.75rem, 1.2rem + 1.5vw, 2.6rem);
+    white-space: nowrap;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .numero__rotulo {
+    font-size: var(--step--1);
+    color: var(--ink-soft);
+  }
+
   .valores {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    margin-top: 2rem;
+    gap: 0 var(--col-gap);
+    margin-top: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
   }
-  
+
   .valor {
-    padding: 1.5rem;
-    background-color: white;
-    border-radius: 2px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.4rem 1.25rem;
+    padding-block: 1.25rem;
+    border-top: 1px solid var(--line);
   }
-  
-  .valor:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+
+  .valor__numero {
+    grid-row: span 2;
+    font-size: var(--step--1);
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+    padding-top: 0.35rem;
   }
-  
-  .valor h4 {
-    font-size: 1.2rem;
-    margin-bottom: 0.8rem;
-    position: relative;
-    padding-bottom: 0.5rem;
+
+  .valor__titulo {
+    font-size: var(--step-1);
+    letter-spacing: -0.02em;
   }
-  
-  .valor h4::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 30px;
-    height: 2px;
-    background-color: var(--color-primary);
+
+  .valor__texto {
+    color: var(--ink-soft);
+    max-width: 36ch;
   }
-  
-  .valor p {
-    font-size: 0.95rem;
-    margin-bottom: 0;
-  }
-  
-  @media (max-width: 992px) {
-    .sobre-content {
-      grid-template-columns: 1fr;
+
+  @media (min-width: 640px) {
+    .numeros {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: 1.5rem;
     }
-    
+
+    .numero {
+      border-bottom: 0;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .sobre__grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      align-items: center;
+    }
+
+    .sobre__figura {
+      grid-column: 1 / span 5;
+    }
+
+    .sobre__texto {
+      grid-column: 7 / span 6;
+    }
+
     .valores {
-      grid-template-columns: 1fr;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .section-header h2 {
-      font-size: 2rem;
-    }
-    
-    .sobre-text h3 {
-      font-size: 1.5rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 </style>

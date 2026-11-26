@@ -1,249 +1,130 @@
 ---
-const anoAtual = new Date().getFullYear();
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { NAV, SITE } from '../data/site';
+
+const ano = new Date().getFullYear();
 ---
 
-<footer class="footer">
+<footer class="footer" data-tema="escuro">
   <div class="container">
-    <div class="footer-content">
-      <div class="footer-logo">
-        <img src="/images/logoobranco.png" alt="Studio DREZ Logo" class="footer-logo-img">
-        <p>Transformando o descartado em arte</p>
+    <div class="footer__linha">
+      <div class="footer__marca">
+        <Logo class="footer__logo" />
+        <p>{SITE.slogan}</p>
       </div>
-      
-      <div class="footer-links">
-        <h4>Links Rápidos</h4>
-        <ul>
-          <li><a href="#sobre">Sobre</a></li>
-          <li><a href="#trabalhos">Trabalhos</a></li>
-          <li><a href="#parceiros">Parceiros</a></li>
-          <li><a href="#contato">Contato</a></li>
+
+      <nav aria-label="Rodapé">
+        <ul class="footer__nav">
+          {
+            NAV.map((item) => (
+              <li>
+                <a class="link-sutil" href={item.href}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
         </ul>
-      </div>
-      
-      <div class="footer-newsletter">
-        <h4>Receba Novidades</h4>
-        <p>Siga no instagram para ficar por dentro dos novos projetos e eventos</p>
-        <a href="https://www.instagram.com/davi.rez/" target="_blank" rel="noopener noreferrer" class="instagram-link">
-          <span class="instagram-handle">@davi.rez</span>
-          <span class="instagram-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-            </svg>
-          </span>
+      </nav>
+
+      <div class="footer__social">
+        <a class="link-sutil footer__insta" href={SITE.instagram.url} target="_blank" rel="noopener noreferrer">
+          <Icon name="instagram" class="footer__icone" />
+          {SITE.instagram.usuario}
+        </a>
+        <a class="link-sutil" href="#topo">
+          Voltar ao topo
+          <Icon name="arrow-n" class="footer__icone" />
         </a>
       </div>
     </div>
-    
-    <div class="footer-bottom">
-      <p>&copy; {anoAtual} Davi Rezende. Todos os direitos reservados.</p>
-      <div class="footer-bottom-links">
-        <a href="#">Política de Privacidade</a>
-        <a href="#">Termos de Uso</a>
-      </div>
-    </div>
+
+    <!-- Assinatura monumental: decorativa (o nome já está no header). -->
+    <p class="footer__assinatura" aria-hidden="true">Davi Rezende</p>
+
+    <p class="footer__copy">© {ano} {SITE.nome}. Todos os direitos reservados.</p>
   </div>
 </footer>
 
-<!-- <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const newsletterForm = document.querySelector('.newsletter-form');
-    
-    newsletterForm?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = newsletterForm.querySelector('input[type="email"]').value;
-      
-      // Aqui você adicionaria a lógica para cadastrar o email
-      
-      // Simulação de cadastro bem-sucedido
-      alert(`Email ${email} cadastrado com sucesso!`);
-      newsletterForm.reset();
-    });
-  });
-</script> -->
-
 <style>
   .footer {
-    background-color: #111;
-    color: white;
-    padding: 4rem 0 2rem;
+    padding-top: clamp(3rem, 1.5rem + 4vw, 5rem);
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+    background: var(--ink);
+    color: var(--on-ink);
+    overflow: hidden;
   }
-  
-  .footer-content {
+
+  .footer__linha {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 3rem;
-    margin-bottom: 3rem;
-  }
-  
-  .footer-logo h3 {
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-  }
-  
-  .footer-logo-img {
-      max-width: 150px;
-      height: auto;
-      margin-bottom: 1rem;
-    }
-    
-    .footer-logo p {
-      opacity: 0.7;
-    }
-  
-  .footer-links h4,
-  .footer-newsletter h4 {
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
-    position: relative;
-    padding-bottom: 0.5rem;
-  }
-  
-  .footer-links h4::after,
-  .footer-newsletter h4::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 30px;
-    height: 2px;
-    background-color: white;
-  }
-  
-  .footer-links ul {
-    list-style: none;
-  }
-  
-  .footer-links li {
-    margin-bottom: 0.8rem;
-  }
-  
-  .footer-links a {
-    opacity: 0.7;
-    transition: opacity 0.3s ease;
-  }
-  
-  .footer-links a:hover {
-    opacity: 1;
-  }
-  
-  .footer-newsletter p {
-    margin-bottom: 1.5rem;
-    opacity: 0.7;
-  }
-  
-  .instagram-link {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.8rem 1.2rem;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 30px;
-    transition: all 0.6s ease;
-    color: white;
-    text-decoration: none;
-    width: fit-content;
-  }
-  
-  .instagram-link:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  }
-  
-  .instagram-handle {
-    font-size: 1.1rem;
-    font-weight: 500;
-  }
-  
-  .instagram-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .instagram-icon svg {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .newsletter-form {
-    display: flex;
-  }
-  
-  .newsletter-form input {
-    flex: 1;
-    padding: 0.8rem;
-    border: none;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-    font-family: var(--font-family);
-  }
-  
-  .newsletter-form input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-  }
-  
-  .btn-newsletter {
-    padding: 0 1.5rem;
-    background-color: white;
-    color: black;
-    border: none;
-    cursor: pointer;
-    font-family: var(--font-family);
-    font-weight: 500;
-    transition: background-color 0.3s ease;
-  }
-  
-  .btn-newsletter:hover {
-    background-color: #ddd;
-  }
-  
-  .footer-bottom {
+    gap: 2.5rem var(--col-gap);
     padding-top: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
+    border-top: 1px solid var(--line-on-ink);
+  }
+
+  .footer__marca {
+    display: grid;
     gap: 1rem;
+    color: var(--on-ink-soft);
+    max-width: 22ch;
   }
-  
-  .footer-bottom p {
-    opacity: 0.7;
-    font-size: 0.9rem;
+
+  .footer :global(.footer__logo) {
+    width: 2.5rem;
+    color: var(--on-ink);
   }
-  
-  .footer-bottom-links {
-    display: flex;
-    gap: 1.5rem;
+
+  .footer__nav,
+  .footer__social {
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
   }
-  
-  .footer-bottom-links a {
-    opacity: 0.7;
-    font-size: 0.9rem;
-    transition: opacity 0.3s ease;
+
+  .link-sutil {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2rem;
+    color: var(--on-ink-soft);
+    transition: color var(--dur-hover) ease;
   }
-  
-  .footer-bottom-links a:hover {
-    opacity: 1;
-  }
-  
-  @media (max-width: 992px) {
-    .footer-content {
-      grid-template-columns: repeat(2, 1fr);
+
+  @media (hover: hover) and (pointer: fine) {
+    .link-sutil:hover {
+      color: var(--on-ink);
     }
   }
-  
-  @media (max-width: 768px) {
-    .footer-content {
-      grid-template-columns: 1fr;
-    }
-    
-    .footer-bottom {
-      flex-direction: column;
-      text-align: center;
+
+  .footer :global(.footer__icone) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  /* O nome ocupa a largura toda: assinatura de catálogo. */
+  .footer__assinatura {
+    margin-top: clamp(2rem, 1rem + 4vw, 4.5rem);
+    /* Tamanho derivado da largura útil: a palavra mede ~5,1× o corpo da
+       fonte, então largura / 5,15 preenche a linha sem estourar. */
+    font-size: min(calc((100vw - 2 * var(--gutter)) / 5.15), calc(var(--max-width) / 5.15));
+    font-weight: 500;
+    line-height: 0.8;
+    letter-spacing: -0.055em;
+    white-space: nowrap;
+    color: var(--on-ink);
+    user-select: none;
+  }
+
+  .footer__copy {
+    margin-top: 2rem;
+    font-size: var(--step--1);
+    color: var(--on-ink-soft);
+  }
+
+  @media (min-width: 768px) {
+    .footer__linha {
+      grid-template-columns: 2fr 1fr 1fr;
     }
   }
 </style>
