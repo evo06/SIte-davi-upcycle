@@ -1,0 +1,50 @@
+# Publica o site Astro no GitHub Pages.
+#
+# Pré-requisito (uma vez, no GitHub): Settings → Pages → Source = "GitHub Actions".
+# Sem isso, o deploy abaixo falha. Enquanto a fonte não for trocada, nada é publicado.
+#
+# Motivo do workflow: o Pages, quando usa "Deploy from a branch", roda Jekyll,
+# que não compila projetos Astro (gerou a falha "pages build and deployment").
+
+name: Deploy Astro para GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# Permissões mínimas para publicar no Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Evita dois deploys ao mesmo tempo; mantém o mais recente.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Instala Node, roda npm ci (usa o package-lock.json) e astro build,
+      # e envia a pasta dist/ como artefato do Pages.
+      - name: Build com Astro
+        uses: withastro/action@v3
+        with:
+          node-version: 20
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
