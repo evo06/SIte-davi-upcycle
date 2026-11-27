@@ -37,7 +37,7 @@ export const TRABALHOS: Trabalho[] = [
     categoria: 'Mobiliário',
     imagem: poltronaFusca,
     descricao:
-      'Nada está perdido — com criatividade, tudo se transforma! Poltrona feita com o capô de um Fusca.',
+      'Nada está perdido: com criatividade, tudo se transforma! Poltrona feita com o capô de um Fusca.',
   },
   {
     titulo: 'Escultura Onda',
@@ -60,7 +60,7 @@ export const TRABALHOS: Trabalho[] = [
     contexto: 'Sambódromo, Rio de Janeiro',
     foco: '30% 50%',
     descricao:
-      'Banco Sol brilhando no Sambódromo! Recarregue as energias — do celular e as suas — e celebre a sustentabilidade.',
+      'Banco Sol brilhando no Sambódromo! Recarregue as energias (do celular e as suas) e celebre a sustentabilidade.',
   },
   {
     titulo: 'Escultura com leques e pulseiras',
@@ -98,13 +98,13 @@ export const TRABALHOS: Trabalho[] = [
     contexto: 'Sesc',
     foco: '50% 62%',
     descricao:
-      'Peixe com contorno em neon, preenchido com garrafas e resíduos plásticos, que carrega um alerta: “Em 2050, os oceanos poderão ter mais plásticos que peixes.” Parte de uma ação de educação ambiental do Sesc.',
+      'Peixe de contorno em neon, cheio de garrafas e resíduos plásticos. A frase na barriga diz: “Em 2050, os oceanos poderão ter mais plásticos que peixes.” Faz parte de uma ação de educação ambiental do Sesc.',
   },
   {
     titulo: 'Escultura Polvo',
     categoria: 'Escultura',
     imagem: esculturaPolvo,
     descricao:
-      'O pedido era usar plásticos de uso doméstico, e o desafio foi justamente compor com elementos pequenos e criar esta mega escultura rica em detalhes — do jeito que sempre quis fazer.',
+      'O pedido era usar plásticos de uso doméstico, e o desafio foi justamente compor com elementos pequenos e criar esta mega escultura rica em detalhes, do jeito que sempre quis fazer.',
   },
 ];

@@ -13,9 +13,9 @@ const ENDERECO_COMPLETO =
 export const SITE = {
   nome: 'Davi Rezende',
   url: 'https://davirezende.com.br',
-  titulo: 'Davi Rezende — Transformando o descartado em arte',
+  titulo: 'Davi Rezende: transformando o descartado em arte',
   descricao:
-    'Arte sustentável e upcycling no Rio de Janeiro: esculturas, mobiliário e instalações feitos a partir de materiais descartados, para marcas como Globo, Shell, Corona e Sesc.',
+    'Arte sustentável e upcycling no Rio de Janeiro: esculturas, mobiliário e instalações feitos com materiais descartados, para marcas como Globo, Shell, Corona e Sesc.',
   slogan: 'Transformando o descartado em arte',
   email: 'davi.rez@gmail.com',
   telefone: {
